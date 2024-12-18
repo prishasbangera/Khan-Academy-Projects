@@ -3,10 +3,12 @@
 
   [Khan Academy Profile](https://www.khanacademy.org/profile/kaid_861909786767545381407237/projects)
 
+Please note that the code may not be the cleanest or the most efficient, as I was just learning and having fun. :)
+
 
  ## Folders
   The folders listed below contain the copied code, but to run/view the projects, view the GitHub Page.
-  Each project has code, some description, and maybe an image and some notes/sources.
+  Each project has code and (in the `ProjectREADME.md file`) name, link, description, and maybe an image and some notes/sources.
 
  - ### Tutorial Projects
  - Projects from following tutorials or when I was just starting out, especially the ones where I was experimenting and adding to the code.
@@ -15,9 +17,9 @@
  - Smaller creative coding/art projects, including some inspired from my calculus classes.
 
  - ### Larger Projects
- - Larger creative coding/art and non-art projects.
+ - Larger art and non-art projects, including some contests.
  
- - ### Showcase
+ - ### SHOWCASE
  - Art and coding projects that I am proud of. See images below.
  - Gallery:
 
