@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head> 
+    
+    <!--
+    
+        https://natureofcode.com/autonomous-agents/
+        
+        One pursues the others
+        The others run away
+        
+        Could be a fun game idea where the player tries to
+        stop one of the autonomous agents 
+        from catching the other
+        
+        Plot twist - all the particles run from the mouse.
+        
+    -->
+    
+        <meta charset="utf-8">
+        <title>Autonomous Agents. Alternatively, the Friend that Everyone Avoids</title>
+        <!--p5.js source-->
+        <script src="https://cdn.jsdelivr.net/gh/Steffan153/files/p5-ka.js"></script>
+        <style>
+            body {
+                margin: 0px;
+                padding: 0px;
+                overflow: hidden;
+                background: black;
+            }
+        </style>
+    </head>
+    <body>
+        <script type>
+
+////////////////////////////////////////////////
+
+var NUM_PARTICLES = 4;
+
+function Vehicle(x = 0, y = 0, clr) {
+    
+    this.pos = createVector(x, y);
+    this.vel = createVector(0, 0);
+    this.acc = createVector(0, 0);
+    
+    this.mass = 1;
+    
+    this.maxspeed = 2;
+    this.maxforce = 0.1;
+    
+    this.siz = 15;
+    this.clr = clr || color(random(100));
+    
+    this.visibilityDist = 100; 
+    
+}
+
+// {
+
+Vehicle.prototype.draw = function() {
+    
+    push();
+    
+    fill(this.clr);
+    noStroke();
+    
+    translate(this.pos.x, this.pos.y);
+    rotate(this.vel.heading());
+    
+    beginShape();
+        vertex( 0,  0);
+        vertex(-this.siz,  this.siz * 0.2);
+        vertex(-this.siz, -this.siz * 0.2);
+    endShape();
+    
+    pop();
+    
+};
+
+Vehicle.prototype.applyForce = function(force) {
+    force.div(this.mass);
+    this.acc.add(force);
+};
+
+Vehicle.prototype.update = function() {
+    
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.vel.limit(this.maxspeed);
+    this.acc.mult(0);
+    
+    if (this.pos.x < 0) {
+        this.pos.x = width;
+    } else if (this.pos.x > width) {
+        this.pos.x = 0;
+    }
+    
+    if (this.pos.y < 0) {
+        this.pos.y = height;
+    } else if (this.pos.y > height) {
+        this.pos.y = 0;
+    }
+    
+    // change size
+    this.siz = map(this.vel.mag()**2, 0, this.maxspeed**2, 0.5, 10)
+    
+};
+
+Vehicle.prototype.seek = function(target, minDist) {
+    minDist = minDist || this.visibilityDist;
+    let desired = p5.Vector.sub(target, this.pos);
+    if (desired.mag() > minDist) return;
+    desired.setMag(this.maxspeed);
+    let steer = p5.Vector.sub(desired, this.vel);
+    steer.limit(this.maxforce);
+    this.applyForce(steer);
+}
+
+Vehicle.prototype.flee = function(target, minDist) {
+    minDist = minDist || this.visibilityDist;
+    let desired = p5.Vector.sub(this.pos, target);
+    if (desired.mag() > minDist) return;
+    desired.setMag(this.maxspeed);
+    let steer = p5.Vector.sub(desired, this.vel);
+    steer.limit(this.maxforce);
+    this.applyForce(steer);
+}
+
+Vehicle.prototype.run = function() {
+    this.update();
+    this.draw();
+};
+
+// }
+
+////////////////////////////////////////////////
+
+p5.disableFriendlyErrors = true;
+
+var vehicles = [];
+
+function setup() {
+    
+    createCanvas(window.innerWidth, window.innerHeight);
+    
+    randomSeed(29);
+    
+    // lessay the first one is the predator
+    vehicles.push( new Vehicle(random(width), random(height), color(255)) );
+    
+    for (let i = 0; i < NUM_PARTICLES-1; i++) {
+        vehicles.push( new Vehicle(random(width), random(height)) );
+    }
+    
+    background(50);
+    
+}
+
+function draw() {
+    
+    // fill(167, 1);
+    // rect(0, 0, width, height);
+    
+    for (let n = 0; n < 2; n++) {
+    
+        // vehicles[0].seek(vehicles[1].pos, 1000);
+        // vehicles[1].flee(vehicles[0].pos, 100);
+        
+        for (let i = 0; i < vehicles.length; i++) {
+            
+            const v = vehicles[i];
+            
+            if (i != 0) {
+                v.flee(vehicles[0].pos, 100);
+                vehicles[0].seek(v.pos, 500);
+            }
+            
+            v.flee(createVector(mouseX, mouseY), 100);
+            
+            v.run();
+            
+        }
+            
+    }
+    
+}
+    
+</script>
+    </body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Floating Orb</title>
+        <!--p5.js source-->
+        <script rel="proconnect" src="https://cdn.jsdelivr.net/gh/NovaSagittarii/misc@1.0.2/p5.min.js"></script>
+        <!--Styling-->
+        <style>
+            body {
+                overflow: hidden;
+                margin: 0px;
+            }
+        </style>
+    </head>
+<body>
+    <!--Container-->
+    <div id="canvas-parent"></div>
+    
+<!--p5.js code-->
+<script type="">
+
+var imgs = [];
+var backdrop;
+var globe;
+
+function Img(config) {
+    let obj = {
+        x: config.x,
+        y: config.y,
+        img: config.create(),
+        display: config.display || function() {
+            image(this.img, this.x, this.y);
+        }
+    };
+    imgs.push(obj);
+    return obj;
+}
+
+function radGrad(s, clr1, clr2, xAdd, yAdd, texture) {
+    
+    let img = createGraphics(s, s);
+    let centerX = img.width/2;
+    let centerY= img.height/2;
+    xAdd = xAdd || 0;
+    yAdd = yAdd || 0;
+    texture = texture || null;
+    img.noStroke();
+    img.background(0, 0);
+    
+    for (let d = s; d >= 0; d-=2) {
+        img.fill(lerpColor(clr2, clr1, d/s));
+        img.ellipse(centerX, centerY, d, d);
+        if (xAdd !== 0) {
+            centerX += xAdd;
+        } 
+        if (yAdd !== 0) {
+            centerY += yAdd;
+        }
+    }
+    
+    if (texture) {
+        texture(img);
+    }
+    
+    return img;
+    
+}
+
+function setup() {
+    
+    let canvas = createCanvas(window.innerWidth, 
+                              window.innerHeight);
+    canvas.parent("canvas-parent");
+    imageMode(CENTER);
+    randomSeed(1);
+    
+    const w = width;
+    const h = height;
+    const speed = 44;
+    
+    /*Create images*/
+    
+    backdrop = Img({
+        x: w/2,
+        y: h/2,
+        create: function() {
+            let img = createGraphics(w, h);
+            img.background(27, 79, 38);
+            img.strokeWeight(1.2);
+            img.stroke(255, 5);
+            //line texture
+            img.push();
+            img.translate(w*0.5, h/4);
+            const r = 501;
+            for (let i = 0; i < 1800; i++) {
+                img.line(random(-r, r), 
+                         random(-r, r), 
+                         random(-r, r),
+                         random(-r, r));
+            }
+            img.pop();
+            //table
+            const tableY = h*0.65;
+            img.noStroke();
+            img.fill(255, 168, 74);
+            img.rect(0, tableY-2, w, h*0.4);
+            for (let y = tableY; y < h; y++) {
+                for (i = 0; i < 10; i++) {
+                    let s = random(5, 78);
+                    let x = random(-w*0.1, w*1.1);
+                    img.stroke(lerpColor(
+                        color(242, 151, 41),
+                        color(250, 161, 73),
+                        random(1)
+                    ));
+                    img.strokeWeight(random(5));
+                    img.line(x, y, x+s, y);
+                }
+            }
+            //shadow top of table
+            img.strokeWeight(4);
+            const shadowY = h*0.72;
+            for (y = tableY; y < shadowY; y+=4) {
+                img.stroke(0, map(y, tableY, shadowY, 110, 0));
+                img.line(0, y, w, y);
+            }
+            //shadow all around
+            img.noFill();
+            img.stroke(0, 2)
+            for (let add = 0, i = 0; i < 90; i+=add, add+=0.10) {
+                img.strokeWeight(i*3);
+                img.rect(0, 0, w, h);
+            }
+            img = img.get();
+            return img;
+        }
+    });
+    
+    shadow = Img({
+        x: w/2,
+        y: h*0.83,
+        create: function() {
+            let img = createGraphics(100, 100);
+            img.translate(img.width/2, img.height/2);
+            img.noStroke();
+            img.fill(0, 5);
+            for (let s = 70; s < 90; s++) {
+                img.ellipse(0, 0, s, s-50);
+            }
+            return img;
+        },
+        display: function() {
+            push();
+            translate(this.x, this.y);
+            scale(sin(frameCount/speed)*0.8 + 2);
+            image(this.img, 0, 0);
+            pop();
+        }
+    });
+    
+    globe = Img({
+        x: w/2,
+        y: h*0.4,
+        create: function() {
+            let grad = radGrad(
+                184, 
+                color(43, 0, 89), 
+                color(184, 0, 235), 
+                0.46, -0.48,
+                function(inst) {
+                    //stars
+                    inst.randomSeed(17);
+                    for (let i = 0; i < 550; i++) {
+                        let x = inst.randomGaussian(
+                            inst.width/2, 37);
+                        let y = inst.randomGaussian(
+                            inst.height/2, 41);
+                        inst.stroke(255, random(50, 200));
+                        inst.strokeWeight(random(2));
+                        inst.point(x, y);
+                    }
+                    //galaxies swirly
+                    inst.angleMode(DEGREES);
+                    let positions = [
+                        [inst.width/2, inst.height*0.50, 
+                         -21, 5, 27],
+                        [inst.width*0.41, inst.height*0.28, 
+                         8, 8, 41],
+                        [inst.width*0.61, inst.height*0.75, 
+                         -12, 12, 32],
+                    ];
+                    for (let i = 0; i < positions.length; i++) {
+                        inst.push();
+                        inst.translate(positions[i][0],
+                                       positions[i][1]);
+                        inst.rotate(positions[i][2]);
+                        for (let a = 0; a < 360; a+=1.6) {
+                            inst.stroke(lerpColor(
+                                color(255, random(150, 255)),
+                                color(random(255),
+                                      random(255),
+                                      random(255)), 0.5
+                            ));
+                            inst.strokeWeight(random(2.7));
+                            let x = cos(a) * (a/positions[i][3]);
+                            let y = sin(a) * (a/positions[i][4]);
+                            inst.point(x, y);
+                        }
+                        inst.pop();
+                    }
+                }
+            );
+            return grad;
+        },
+        display: function() {
+            image(this.img, this.x, this.y,
+                  this.img.width*1.7, this.img.height*1.7);
+            this.y = cos(frameCount/speed) + this.y;
+        }
+    });
+    
+}
+
+function draw() {
+    
+    for (let i = 0; i < imgs.length; i++) {
+        imgs[i].display();
+    }
+    
+}
+
+</script>
+<!--end p5.js code-->
+
+    </body>
+</html>

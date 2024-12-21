@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+
+    <!--
+        Sources for learning: 
+            w3schools, MDN, Stack Overflow
+    -->
+    
+    <head>
+    
+        <meta charset="utf-8">
+        <title>Caesar Cipher Encoder and Decoder Tool</title>
+        
+        <!--Font-->
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+        <!--Material Icons-->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        
+        <!--Styling-->
+        <style>
+            /*General stuff*/
+            * {
+                padding: 0px;
+                margin: 0px;
+                font-family: "Raleway", sans-serif;
+            }
+            body {
+                /*Background*/
+                overflow: hidden;
+                background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/CNAM-IMG_0558.jpg/1200px-CNAM-IMG_0558.jpg");
+                background-size: 150%;
+                color: rgb(199, 199, 199);
+            }
+            /*Textareas, buttons*/
+            textarea {
+                resize: none;
+                overflow: auto;
+                padding: 2%;
+                border-radius: 6px;
+                border: solid 1px rgb(94, 94, 94);
+            }
+            button {
+                cursor: pointer;
+                padding: 1%;
+            }
+            textarea, .regular-button, input {
+                outline: none;
+                background: rgb(66, 66, 66, 0.2);
+                color: rgb(201, 201, 201);
+            }
+            /*On focus, outline is box shadow*/
+            textarea:focus, a:focus, button:focus, input:focus {
+                box-shadow: 0 0 0 1px rgb(87, 87, 87);
+            }
+            /*Links*/
+            a {
+                -webkit-transition: 0.4s;
+                transition: 0.4s;
+                color: rgb(0, 166, 255);
+                text-decoration: none;
+                outline: none;  
+            }
+            a:hover {
+                color: rgb(0, 225, 255);
+            }
+            a:active {
+                color: rgb(130, 240, 255);
+            }
+            /*horizontally center*/
+            .centerX {
+                -webkit-transform: translate(-50%, 0%);
+                transform: translate(-50%, 0%);
+                position: absolute;
+                left: 50%;
+                width: 100%;
+                text-align: center;
+            }
+        </style>
+        <!--Pages-->
+        <style>
+            .page-div {
+                /*Position*/
+                -webkit-transform: translate(-50%, -50%) scale(0);
+                transform: translate(-50%, -50%) scale(0);
+                width: 73%;
+                height: 75%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                /*Transitioning*/
+                opacity: 0%;
+                -webkit-transition: 1s;
+                transition: 1s;
+                /*Look*/
+                background: rgb(0, 0, 0, 0.85);
+                padding: 3%;
+                border: rgb(59, 59, 59) 2px solid;
+                border-radius: 20px;
+            }
+            /*Show the current page*/
+            .show {
+                opacity: 100%;
+                -webkit-transform: translate(-50%, -50%) scale(1);
+                transform: translate(-50%, -50%) scale(1);
+            }
+            /*Thumbnail page*/
+            #thumbnail-page-div {
+                display: none;
+                width: 400px;
+                height: 400px;
+                background-color: rgb(23, 23, 23);
+            }
+        </style>
+        <!--Textareas-->
+        <style>
+            .text-input, .text-output {
+                /*Positioning*/
+                -webkit-transform: translate(-50%, 0%);
+                transform: translate(-50%, 0%);
+                position: absolute;
+                left: 50%;
+                margin: 0px;
+                position: absolute;
+                width: 78%;
+                height: 18%;
+                text-transform: uppercase;
+            }
+            /*Positioning text areas*/
+            .text-input {
+                top: 19%;
+            }
+            .text-output {
+                top: 48%;
+            }
+        </style>
+        <!--Buttons-->
+        <style>
+            .regular-button {
+                -webkit-transition: 0.3s;
+                transition: 0.3s;
+                border-radius: 17%;
+                border: solid 1px rgb(115, 115, 115);
+                font-size: 0.8em;
+            }
+            .regular-button:hover {
+                background: rgb(214, 214, 214, 0.2);
+                -webkit-transition: 0.3s;
+                transition: 0.3s;
+            }
+            /*Buttons to other pages on homepage*/
+            .page-button {
+                width: 59%;
+                height: 13%;
+                font-size: 19px;
+                background: none;
+            }
+            .page-button:hover {
+                letter-spacing: 3px;
+            }
+            /*Buttons that call text shift function*/
+            .submit-button {
+                position: absolute;
+                top: 78%;
+                left: 40%;
+                width: 34%;
+                height: 9%;
+            }
+            /*reset button that clears input*/
+            .reset-button {
+                position: absolute;
+                top: 79%;
+                left: 82%;
+            }
+            /*Home Button*/
+            #home-button {
+                margin: 1%;
+                -webkit-transition: 0.6s;
+                transition: 0.6s;
+                /*Appearance*/
+                border-radius: 100%;
+                border-width: 3px;
+                outline: none;
+                background: rgb(56, 56, 56);
+                color: rgb(240, 240, 240);
+                font-family: "Material Icons";
+                font-size: 1.4em;
+            }
+            #home-button:hover {
+                background: rgb(87, 87, 87);
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        </style>
+        <!--Shift/key input (number)-->
+        <style>
+            .key-input-div {
+                position: absolute;
+                top: 79%;
+                left: 8%;
+            }
+            .key-input-div label {
+                font-size: 0.9em;
+            }
+            .key-input {
+                width: 30%;
+                padding: 1%;
+                border-radius: 10%;
+                border: solid 1px rgb(102, 102, 102);
+                font-family: sans-serif;
+                color: rgb(217, 217, 217);
+            }
+        </style>
+        
+    </head>
+    
+    <body>
+        
+    <button id="home-button">home</button>
+    
+    <!--Start Page-->
+    <div id="start-page-div" class="page-div">
+        <!--Title-->
+        <h1 id="main-title" class="centerX" style="top: 9%;">
+            Encoder and Decoder Tool</h1>
+        <h3 id="welcome-text" class="centerX" style="top: 30%;">
+            Oh, hello. What would you like to do?</h3>
+        <!--Buttonss-->
+        <button id="encrypt-page-button" style="top: 46%;"
+            class="regular-button page-button centerX">
+            Encrypt a message</button>
+        <button id="decrypt-page-button" style="top: 66%;"
+            class="regular-button page-button centerX">
+            Decrypt a message</button>
+        <!--Link to learn more-->
+        <a target="_blank" id="learn-link" class="centerX" href="https://www.khanacademy.org/computing/computer-science/cryptography" style="bottom: 7%; width: 100%">Learn more about Caesar Ciphers</a>
+    </div>
+    
+    <!--Encrypt Page-->
+    <div id="encrypt-page-div" class="page-div">
+        <h2 class="centerX">Encryptor</h2>
+        <!--Input-->
+        <textarea placeholder="Message to encrypt..." 
+            id="encrypt-input" class="text-input"></textarea>
+        <div class="key-input-div">  
+            <label for="key-input">
+                Shift by: </label>
+            <input type="number" name="key-input" 
+                class="key-input" min="0" max="25"
+                id="encrypt-key-input">
+        </div>
+        <!--Buttons-->
+        <button class="regular-button submit-button" 
+            id="encrypt-submit-button">Encrypt</button>
+        <button class="regular-button reset-button">
+            Reset</button>
+        <!--Output-->
+        <textarea class="text-output" id="encrypt-output"
+            placeholder="Output..."></textarea>
+    </div>
+    
+    <!--Decrypt Page-->
+    <div id="decrypt-page-div" class="page-div">
+        <h2 class="centerX">Decryptor</h2>
+        <!--Input-->
+        <textarea placeholder="Message to decrypt..." 
+            id="decrypt-input" class="text-input"></textarea>
+        <div class="key-input-div">  
+            <label for="key-input">
+                Unshift by: </label>
+            <input type="number" name="key-input" 
+                class="key-input" min="0" max="25"
+                id="decrypt-key-input">
+        </div>
+        <!--Buttons-->   
+        <button class="regular-button submit-button"
+            id="decrypt-submit-button">Decrypt</button>
+        <button class="regular-button reset-button">
+            Reset</button>
+        <!--Output-->   
+        <textarea class="text-output" id="decrypt-output"
+            placeholder="Output..."></textarea>
+    </div>
+    
+    <!--Thumbnail-->
+    <div id="thumbnail-page-div">
+        <h1 class="centerX" style="top:13%; font-size:553%; 
+            font-family:Trebuchet MS;">Caesar Cipher</h1>
+        <h2 class="centerX" style="top: 73%; font-size: 195%; 
+            font-family: Trebuchet MS;">Encoder and Decoder</h2>
+    </div>
+    
+    <!--Other-->
+    <script>
+        /*Function to get element by id*/
+        function getById(el) {
+            return document.getElementById(el);
+        }
+        /*Turn off spell check in textareas*/
+        (function() {
+            var textareas = document.getElementsByTagName("textarea");
+            for (let i = 0; i < textareas.length; i++) {
+                textareas[i].spellcheck = false;
+            }
+        })();
+    </script>
+    
+    <!--For page changes-->
+    <script>
+    
+        /*CHANGE PAGE FUNCTION*/
+        var pages = document.getElementsByClassName("page-div");
+        function changePage(pageDiv) {
+            /*Hide everything*/
+            for (let i = 0; i < pages.length; i++) {
+                pages[i].classList.remove("show");
+            }
+            /*Show current page*/
+            pageDiv.classList.add("show");
+        }
+        
+        /*HOMEPAGE*/
+        var homeBtn = getById("home-button");
+        homeBtn.onclick = function() {
+            var startPage = getById("start-page-div");
+            changePage(startPage);
+            homeBtn.style.display = "none";
+        };
+        
+        /*ENCRYPT PAGE*/
+        var encryptPageBtn = getById("encrypt-page-button");
+        encryptPageBtn.onclick = function() {
+            let encryptPage = getById("encrypt-page-div");
+            changePage(encryptPage);
+            homeBtn.style.display = "block";
+        };
+        
+        /*DECRYPT PAGE*/
+        var decryptPageBtn = getById("decrypt-page-button");
+        decryptPageBtn.onclick = function() {
+            let decryptPage = getById("decrypt-page-div");
+            changePage(decryptPage);
+            homeBtn.style.display = "block";
+        };
+        
+        /*User initially on home page*/
+        homeBtn.click();
+        
+    </script>
+    
+    <!--For Thumbnail-->
+    <script>
+        var thumbnailOn = false;
+        window.addEventListener("keydown", function(event) {
+            /*if escape key is pressed*/
+            if (event.keyCode == 27) {
+                thumbnailOn = !thumbnailOn;
+                let thumbnailPage = getById("thumbnail-page-div");
+                if (thumbnailOn) {
+                    /*Alert thumbnail is on*/
+                    setTimeout(function() { 
+                        alert("You are viewing the thumbnail. Press ESC to go back."); 
+                    }, 200);
+                    /*Hide pages, display thumbnail*/
+                    for (var i = 0; i < pages.length; i++) {
+                        pages[i].style.display = "none";
+                    }
+                    thumbnailPage.style.display = "block";
+                } else {
+                    /*Hide thumbnail, display pages*/
+                    for (var i = 0; i < pages.length; i++) {
+                        pages[i].style.display = "block";
+                    }
+                    thumbnailPage.style.display = "none";
+                }
+            }
+        });
+    </script>
+    
+    <!--Buttons, Encryption/Decryption-->
+    <script>
+    
+        /*RESET BUTTONS*/
+        var resetBtns = document.getElementsByClassName("reset-button");
+        for (let i = 0; i < resetBtns.length; i++) {
+            resetBtns[i].onclick = function() {
+                /*Clear all textareas*/
+                let textareas = document.getElementsByTagName("textarea");
+                for (let j = 0; j < textareas.length; j++) {
+                    textareas[j].value = "";
+                }
+            };
+        }
+        
+        /*ENCRYPT AND DECRYPT BY SHIFTING TEXT*/
+        var textShifter = {
+            errorMsg: "Please specify a valid key (integer between 0 and 25).",
+            alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
+            shift: function(str, amt) {
+                /*Turn str to array, uppercase letters*/
+                str = str.toUpperCase();
+                str = str.split("");
+                /*The output string*/
+                let output = "";
+                /*Loop through string*/
+                for (let i = 0; i < str.length; i++) {
+                    /*Get index of current character*/
+                    let index = this.alphabet.indexOf(str[i]);
+                    /*If index was found*/
+                    if (index !== -1) {
+                        /*Doing modulo like this to account for
+                          negative numbers. See stack overflow*/
+                        let n = index+amt;
+                        let shifted = ((n % 26) + 26) % 26;
+                        /*Add to output string*/
+                        output += this.alphabet[shifted];
+                    } else {
+                        /*Else add character to output
+                          could be spaces, punctuation, etc.*/
+                        output += str[i];
+                    }
+                }
+                /*Return the output string*/
+                return output;
+            },
+            checkKeyInput: function(keyInput) {
+                /*First check if keyInput is empty*/
+                if (keyInput === "") {
+                    alert(this.errorMsg); 
+                    return false;
+                } else {
+                    /*Turn input to number, check if valid*/
+                    keyInput = parseFloat(keyInput);
+                    if (keyInput < 0 || keyInput > 25 || 
+                        keyInput === NaN) {
+                        alert(this.errorMsg); 
+                        return false;
+                    } else {
+                        /*Return the key input*/
+                        return keyInput;
+                    }
+                }
+            },
+            performShift: function(input, keyInput, outputArea) {
+                /*perform text shift on input*/
+                let output = textShifter.shift(input, keyInput);
+                /*output text area -> set to output*/
+                outputArea.value = output;
+            }
+        };
+        
+        /*ENCRYPT*/
+        var encryptBtn = getById("encrypt-submit-button");
+        encryptBtn.onclick = function() {
+            /*Find key input and check*/
+            let keyInput = getById("encrypt-key-input").value;
+            let check = textShifter.checkKeyInput(keyInput);
+            /*If check was successful*/
+            /*Account for 0 since it would 
+              be false otherwise*/
+            if (check || check === 0) {
+                /*Change keyInput to whatever 
+                  check function returned*/
+                keyInput = check;
+            } else {
+                /*Check not successful. 
+                  There should have been
+                  an error alert message. 
+                  Exit function.*/
+                return;
+            }
+            /*Find input and output area*/
+            let input = getById("encrypt-input").value;
+            let outputArea = getById("encrypt-output");
+            /*perform the shift*/
+            textShifter.performShift(input, keyInput, 
+                                     outputArea);
+        };
+        
+        /*DECRYPT*/
+        var decryptBtn = getById("decrypt-submit-button");
+        decryptBtn.onclick = function() {
+            /*Find key input and check*/
+            let keyInput = getById("decrypt-key-input").value;
+            let check = textShifter.checkKeyInput(keyInput);              
+            /*If check was successful*/
+            /*Account for 0 since it would 
+              be false otherwise*/
+            if (check || check === 0) {
+                /*Change keyInput to whatever 
+                  check function returned*/
+                keyInput = check;
+            } else {
+                /*Check not successful. 
+                  There should have been
+                  an error alert message. 
+                  Exit function.*/
+                return;
+            }
+            /*Find input and output 
+              area, then perform the text shift*/
+            let input = getById("decrypt-input").value;
+            let outputArea = getById("decrypt-output");
+            /*Negative key input to decrypt*/
+            textShifter.performShift(input, -keyInput, 
+                                     outputArea);
+        };
+        
+    
+    </script>
+
+    </body>
+    
+</html>

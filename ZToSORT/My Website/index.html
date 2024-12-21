@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+
+<html>
+
+    <!--    Attributes: 
+    
+    Where I learned how to create tabs:
+    w3schools.com/howto/howto_js_tabs.asp
+    
+    Where I learned to add project image links (from Pamela):
+    khanacademy.org/computer-programming/codeathome-collage/6056684315295744
+    
+    -->
+    
+    <head>
+    
+        <meta charset="utf-8">
+        <title>My Website</title>
+        
+        <!--Fonts-->
+        <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
+        
+        <style>
+        
+            body {
+                margin: 0px;
+                font-family: "Lato", "Sofia Pro", sans-serif;
+                background-color: #ebebeb;
+            }
+            
+            #myImg {
+                margin: 10px auto 20px;
+                margin-top: 20px;
+                display: block;
+                width: 55%;
+            }
+            
+            #tabTitle {
+                margin: 0px;
+                padding: 7px;
+                padding-right: 14px;
+                font-size: 20px;
+                color: white;
+                float: right;
+                font-family: "Satisfy", "Lato",                                                "Sofia Pro", sans-serif;
+            }
+            
+            a {
+                text-decoration: none;
+                color: #2196f3;
+            }
+            
+            a:active {
+                color: blue;
+            }
+            
+            a:visited {
+                color: purple;
+            }
+            
+            .tab {
+                background-color: rgb(0, 13, 66);
+            }
+            
+            .tab button {
+                padding: 11px;
+                background-color: inherit;
+                float: left top;
+                cursor: pointer;
+                font-family: "Lato", "Sofia Pro", sans-serif;
+                color: white;
+                border: none;
+                font-size: 15px;
+                outline: none;
+                text-align: center;
+                transition: 0.3s;
+
+            }
+            
+            .tab button:hover {
+                background-color: #0f3a66;
+            }
+            
+            .tab button.active {
+                background-color: #0f3a66;
+            }
+            
+            .tabcontent {
+                display: none;
+            }
+            
+            .tabcontent h2 {
+                text-align: center;
+                margin-bottom: 21px;
+                margin-top: 29px;
+            }
+            
+            .tabcontent h3 {
+                margin: 0px;
+                margin-bottom: 5px;
+                text-align: center;
+            }
+            
+            .tabcontent p {
+                margin: 0px;
+            }
+            
+            #about-content p {
+                background: white;
+                padding: 17px;
+                margin-left: 31px;
+                margin-right: 31px;
+                border-left: rgb(0, 115, 105) 8px solid;
+                font-size: 15px;
+            }
+            
+            #welcome {
+                background: rgb(24, 242, 202);
+                border-radius: 18px;
+                padding: 12px;
+                margin-top: 21px;
+                margin-left: 20px;
+                margin-right: 20px;
+                font-size: 16px;
+            }
+            
+            #todo-list {
+                list-style-position: inside;
+                background: white;
+                padding: 15px;
+                margin-left: 33px;
+                margin-right: 33px;
+                border-left: rgb(0, 186, 207) 8px solid;
+            }
+            
+            .logItem {
+                background: white;
+                padding: 16px;
+                margin-left: 33px;
+                margin-right: 33px;
+                margin-bottom: 21px;
+                border-left: rgb(0, 207, 190) 8px solid;
+            }
+            
+            .project-showcase {
+                display: flex;
+                flex-wrap: wrap;
+                list-style: none;
+            }
+            
+            .project-showcase img {
+                filter:drop-shadow(0px 0px 11px gray);
+                vertical-align: bottom;
+                transition: 0.3s ease-in-out;
+            }
+            
+            .project-showcase h4 {
+                margin-top: 4px;
+            }
+            
+            .project-showcase li {
+                margin-left: 26px;
+                margin-right: 26px;
+                transition: 0.3s ease-in-out;
+            }
+        
+            .project-showcase li:hover {
+                transform: scale(1.1);
+            }
+            
+            #flowers {
+                position: fixed;
+                z-index: -1;
+                width: 87px;
+                opacity: 61%;
+                right: 8px;
+                bottom: 4px;
+            }
+            
+        </style>
+        
+    </head>
+    
+    <body>
+    
+    <!--Tab Links-->
+
+    <div class="tab">
+    
+        <button id="home" class="tablinks" onclick="openTab(event, 'home-content')">Home</button>
+        <button class="tablinks" onclick="openTab(event, 'highlights-content')">Highlights</button>
+        <button class="tablinks" onclick="openTab(event, 'art-content')">Art</button>
+        <button class="tablinks" onclick="openTab(event, 'others-content')">Others</button>
+        <button class="tablinks" onclick="openTab(event, 'log-content')">Log</button>
+        <button class="tablinks" onclick="openTab(event, 'about-content')">About</button>
+
+        <a id="tabTitle" href="https://www.khanacademy.org/profile/EmeraldBlackbird" title="Click to go to my profile.">My Profile</a>
+        
+    </div>        
+    
+
+    <!--Tab Content-->
+    
+    <!--Home-->
+    <div id="home-content" class="tabcontent">
+    
+        <p id="welcome"> Welcome to my website! I'm using it to keep a log of my coding activity and showcase the best projects I've created so far. Click on an image to go to its program page.</p>
+        
+        <a href="https://www.khanacademy.org/computer-programming/me/5306349784481792"><img id="myImg" src="https://www.khanacademy.org/computer-programming/me/5306349784481792/latest.png"></a>
+    
+        <h2>Latest</h2>
+        
+        <div class="logItem">
+            <h3>November 8, 2020</h3>
+            <p>
+                Hi! Here's a <a href="https://www.khanacademy.org/computer-programming/experiment/6190356495024128">
+                Worley Noise (maybe?) and bitwise operator
+                experiment thingy.</a> Also, I used
+                Lindemayer Systems in a graphic (finally). It's
+                called <a href="https://www.khanacademy.org/computer-programming/serene-winter-night/5979125787082752">
+                Serene Winter Night</a>.
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>October 31, 2020</h3>
+            <p>
+                Happy Halloween! First of all, here's a random
+                <a href="https://www.khanacademy.org/computer-programming/space-donuts/6649567165235200">Space Donut</a> 
+                fractal thingy. I made it because
+                I was bored, and fractals are really
+                awesome -- except I never saw donuts
+                used instead of circles. :P <br>
+                Also, here is another Khantober project: 
+                <a href="https://www.khanacademy.org/computer-programming/flow-khantober/4802895315419136">Flow</a>.
+                It's part of my attempt to relearn
+                Natural Simulations.
+                I used my Sketchpad for an art assignment, 
+                as well. I drew the kitten from Kitbull,
+                and added some code so that each stroke is
+                drawn one at a time. <a href="https://www.khanacademy.org/computer-programming/kitbull/4779911661961216">Here it is.</a>
+                Finally, here's a graphic -- <a href="https://www.khanacademy.org/computer-programming/in-noctem-into-the-night/5366964820852736">In Noctem (Into
+                the Night)</a>. 
+                It was really fun to make, and I reckon it 
+                turned out well.
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>October 23, 2020</h3>
+            <p>
+                Hello! Here is my Khantober project that I
+                submitted this week. It actually got Program
+                of the Day, which was a very nice 
+                surprise. :D It's also my entry for
+                Useful Applications -- <a href="https://www.khanacademy.org/computer-programming/sketchpad-contest-useful-application-webpage-submissions/5006241551302656">Sketchpad</a>.
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>October 17, 2020</h3>
+            <p>
+                Hello! Here's my simple Khantober project for
+                Week 2: <a href="https://www.khanacademy.org/computer-programming/reminiscence-khantober-week-2/4650954313121792">Reminesence</a>. Also, I did another font 
+                for TAU--<a href="https://www.khanacademy.org/computer-programming/font-in-your-face-joffrey/4996534654681088">In Your Face, Joffrey!</a> It was very
+                fun and oddly relaxing to create.
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>October 6, 2020</h3>
+            <p>
+                Many things have been happening! I joined Team
+                Among Us, and so far I've created this 
+                <a href="https://www.khanacademy.org/computer-programming/among-us-font/6625535628361728">pixel
+                font</a>. I'm also doing Khantober -- my day for
+                releasing projects is Tuesday. Here is my first
+                project --
+                <a href="https://www.khanacademy.org/computer-programming/lia-khantober-week-1/6485280581435392">Lia</a>! 
+                One of my friends created Lia, and I think the
+                graphic turned out well. Finally, here's another
+                random experiment --
+                <a href="https://www.khanacademy.org/computer-programming/emoji-art/6071799747133440">Emoji Art</a>. Have a
+                great day if you're actually reading this, future
+                me! :D
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>September 27, 2020</h3>
+            <p>
+                I've just about finished with my last entry to the
+                Coding Hackathon, <a href="https://www.khanacademy.org/computer-programming/stellar-evolution-contest-cycles-of-science/4506223489794048">Stellar Evolution.</a> I'm debating 
+                whether or not to join Khantober, but honestly, I
+                don't want to make any commitments at the moment,
+                just keep learning on Khan Academy.
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>September 16, 2020</h3>
+            <p>
+                There are too many things to do! AH! Anyway, what
+                is it with me and random experiments? Here are
+                some I did at midnight: <br><br>
+                <a href="https://www.khanacademy.org/computer-programming/lights/5406352042311680">-Lights</a><br>
+                <a href="https://www.khanacademy.org/computer-programming/lights-2/5985929709961216">-More Lights</a><br>
+                <a href="https://www.khanacademy.org/computer-programming/spin-off-of-lights/6736925763518464">-Stars</a><br>
+                <a href="https://www.khanacademy.org/computer-programming/spin-off-of-lights-2/5758455071850496">-Cave?</a>
+                <br><br>
+                I'm starting to really love experimenting with
+                for loops and all that to get different
+                textures.
+                
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>September 10, 2020</h3>
+            <p>
+                Hi there! I am proud to present ...
+                <a href="https://www.khanacademy.org/computer-programming/stop-motion-animation-studio/6703260257566720">Stop Motion Animation Studio</a>
+                for TCH Challenge 2! (Except I'm not
+                sure if it really fits the theme ... )
+                It was really fun to create! My brother and I have
+                made several stop motions on YouTube, so that's
+                where I got inspiration!
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>September 4, 2020</h3>
+            <p>
+                Hello, hello, hello! So much has happened this
+                week. I created two graphics for my art class,
+                one with a 
+                <a href="https://www.khanacademy.org/computer-programming/art-project/5920613557157888">fractal tree</a>
+                and one called 
+                <a href="https://www.khanacademy.org/computer-programming/the-window/4536459891392512">The Window,</a> 
+                in which I discover a very nice texture.
+                Also, I took a 
+                <a href="https://www.khanacademy.org/computer-programming/spin-off-of-a-new-type-of-fractal/6442537680977920">spin-off</a> 
+                of a very cool project called "A New Type of
+                Fractal" and experimented with strokeWeight,
+                randomSeed, and bitwise operaters. I then (tried
+                to) create a 
+                <a href="https://www.khanacademy.org/computer-programming/zozo-coding-hackathon-challenge-1/5585961679142912">contest entry</a> for The Coding Hackathon, but it didn't turn
+                out that great because I'm busy with school.
+                And finally, last but not least, I learned that 
+                <a href="https://www.khanacademy.org/computer-programming/anomalous-athletics-for-contest-sports/6322422372712448">my project</a>
+                was one of the winners of Contest: Sports. I
+                really wasn't expecting this because there were
+                so many other great entries out there, but I'm 
+                glad I got the opportunity to participate
+                nonetheless. Some things I learned about: loading
+                image algorithms, how to use mask with
+                createGraphics, and how to abuse for loops to
+                create amazing textures. Does anyone read these?
+                
+            </p>
+        </div>
+    
+    </div>
+
+    <!--Highlights-->
+    <div id="highlights-content" class="tabcontent">
+    
+        <h2>Highlights</h2>
+        
+        <ul id="best-projects" class="project-showcase"></ul>
+        
+    </div>
+    
+    <!--Art Projects-->
+    <div id="art-content" class="tabcontent">
+    
+        <h2>Art</h2>
+        
+        <ul id="art-images" class="project-showcase"></ul>
+        
+    </div>
+    
+    <!--Other Projects-->
+    <div id="others-content" class="tabcontent">
+    
+        <h2>Others</h2>
+        
+        <ul id="other-projects" class="project-showcase"></ul>
+        
+    </div>
+    
+    <!--Previous Updates / Log-->
+    <div id="log-content" class="tabcontent">
+        
+        <h2>Previous Updates</h2>
+        
+        <div class="logItem">
+            <h3>August 22, 2020</h3>
+            <p>
+                It's midnight, and I just coded for myself a
+                <a href="https://www.khanacademy.org/computer-programming/chaos-game-sierpinskis-triangle/4578551391928320">chaos game program</a>. 
+                Bear with me when I say
+                that it randomly generates points that altogether
+                look suspiciously like Sierpinski's Triangle.
+                I've made too many programs with that thing,
+                creating it by recursion two different ways, by
+                a Lindenmayer system, and now  by a chaos game.
+                However, this one is completely 101% made by me,
+                so I'm happy. :D
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>August 21, 2020</h3>
+            <p>
+                Today, I made a spin-off of my Music Contest
+                Entry and only kept the pixel art things, since
+                they use Object-Oriented Programming. It's going
+                to help with the Color by Number game I'm trying
+                to do. 
+                <a href="https://www.khanacademy.org/computer-programming/pixel-art-oop/6041341755473920">Here it is.</a>
+                Plus, I did this <a href="https://www.khanacademy.org/computer-programming/something/6654136398200832">random experiment</a> thingy yesterday.
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>August 19, 2020</h3>
+            <p>
+                I've done a lot today! I figured out the
+                <a href="https://www.khanacademy.org/computer-programming/mandelbrot/6723119566635008">Mandelbrot Set</a> 
+                with a lot of help from Miles Waugh.
+                I want to experiment with all the different
+                ways I can color it.
+                I also took my L-System project and made
+                a rainbow <a href="https://www.khanacademy.org/computer-programming/gosper-curve-l-systems/6337713171939328">Gosper Curve</a>!
+                A few days ago I started a Color by Number game
+                as well.
+                Plus, my project of me in flat art actually has
+                inspired several other projects! That never
+                happened to me before. :D
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>August 18, 2020</h3>
+            <p>
+                I've made a couple of changes to this website.
+                Now there's an Art tab and an Others tab for
+                projects that don't really fit anywhere else.
+                Also, it looks like I spent my six months of
+                summer entirely on Khan Academy. Yay! 
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>August 16, 2020</h3>
+            <p>
+                Today I tried to create a flat art picture of
+                myself. This is not my strong suite! But it
+                turned out okay. 
+                <a href="https://www.khanacademy.org/computer-programming/me/4672896953040896"> Here it is. </a>
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>August 13, 2020</h3>
+            <p>
+                Woooow!! I learned about <a href="https://www.khanacademy.org/computer-programming/2d-raytracing-test/4977454853996544"> 2D Raycasting</a> and how to
+                <a href="https://www.khanacademy.org/computer-programming/rendering-raycasting/4822341321572352">render that raycasting</a>! 
+                My source was Daniel
+                Shiffman's videos 2D Raycasting and Rendering
+                Raycasting, but he did it in p5.js, so I had to
+                change a lot of stuff. I made sure I understood
+                every single detail. The idea of raycasting is
+                actually pretty cool.
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>August 10, 2020</h3>
+            <p>
+                I figured out how to do 
+                <a href="https://www.khanacademy.org/computer-programming/l-systems/6493721087787008">L-Systems</a> 
+                from The Coding Train! They're actually
+                amazingly mathematical and mathematically 
+                amazing. Also--I forgot to mention--some time ago
+                I learned about recursive functions, which are
+                absolutely amazing! I learned how to generate
+                <a href="https://www.khanacademy.org/computer-science/recursive-art/6433165964296192">Sierpinski's Triangle and fractal trees</a> with them.
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>July 29, 2020</h3>
+            <p>
+            Today I finished the jQuery tutorials on Khan 
+            Academy. Mental note: one day, I should just start
+            working on all the projects in Advanced Games and 
+            Visualizations, jQuery, HTML, and Natural Simulations
+            I skipped. Meanwhile, I moved on to Algorithms. 
+            It's really interesting!
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>July 26, 2020</h3>
+            <p>I finished my Contest: Sports entry!!! It's called 
+               <a href="https://www.khanacademy.org/computer-programming/anomalous-athletics-for-contest-sports/6322422372712448">Anomalous Athletics.</a>
+               Also, today I watched a video by The Coding Train
+               and learned how to depict a visualization of the
+               Collatz Conjecture in code! I made a few changes,
+               though, because his video used Processing, not
+               ProcessingJS. I also made it all rainbowy. 
+               <a href="https://www.khanacademy.org/computer-programming/visualizing-the-collatz-conjecture/4888837312823296">
+               Here it is! </a>
+               </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>July 19, 2020</h3>
+            <p>On July 3, I started my sports contest entry, and
+            just yesterday, I learned how to "load" images before
+            a program starts from Reality Studio's 
+            <a href="https://www.khanacademy.org/computer-programming/isolation/5308205429506048">Isolation</a>. 
+            I created a 
+            <a href="https://www.khanacademy.org/computer-programming/trying-to-make-sense-of-the-loading-images-thingy/4768803863216128">spin-off</a> 
+            and added some changes, too.
+            </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>June 30, 2020</h3>
+            <p>Today I finished the Natural Simulations course.
+            Yay, but I probably need to go back through it to make
+            sure I understand everything. Here's another 
+            <a href="https://www.khanacademy.org/computer-programming/particle-types-test-confetti-rain/6506657544224768">
+            particle system program</a>.</p>
+        </div>
+        
+        <div class="logItem">
+            <h3>June 29, 2020</h3>
+            <p>Today I did made a really weird 
+            <a href="https://www.khanacademy.org/computer-programming/eye/4576765109944320">eye thingy</a>. But I liked the space
+            thing I made and I wanted to use it in something, so
+            this is what I came up with.</p>
+        </div>
+        
+        <div class="logItem">
+            <h3>June 26, 2020</h3>
+            <p>I tried masking today! I didn't even know what it
+            was, but eventually, I found a very helpful tutorial
+            and a video. So 
+            <a href="https://www.khanacademy.org/computer-programming/masking-test/4704290713714688">
+            here it is</a>.</p>
+        </div>
+        
+        <div class="logItem">
+            <h3>June 22, 2020</h3>
+            <p>I made a 
+            <a href="https://www.khanacademy.org/computer-programming/best-friends/6331158028435456">
+            shoop and a bun</a> and they go only on the very 
+            best super-amazingly-amazing magicial adventures
+            together!!!</p>
+        </div>
+        
+        <div class="logItem">
+            <h3>June 19, 2020</h3>
+            <p>Today I learned more about particles, particle
+               systems, and systems of systems of systems of
+               systems of systems of systems of particle 
+               systems. I tried to make 
+               <a href="https://www.khanacademy.org/computer-programming/systems-of-particle-systems-test/6221758005329920">
+               this drawing program</a> with it. In the future, I
+               want to add buttons to it so that there can be
+               multiple brushes, each brush being a different
+               particle system system.</p>
+        </div>
+        
+        <div class="logItem">
+            <h3>June 17, 2020</h3>
+            <p>Just a note: many of my projects, especially the
+               ones labeled "Test," are projects that I have done
+               along with the lessons on Khan Academy. I do this
+               to make sure I understand everything, and I add
+               things and play with the code.</p>
+        </div>
+        
+        <div class="logItem">
+            <h3>June 16, 2020</h3>
+            <p>I learned about <a href="https://www.khanacademy.org/computer-programming/pendulum-test/5709163062181888">
+            pendulums</a> and a little bit about 
+            <a href="https://www.khanacademy.org/computer-programming/particles-test/5219774188044288">particle systems</a> today,
+            but I think I need to backtrack a little and make sure
+            I understand everything. Maybe in the future I'll try
+            to turn the pendulum into a puppet you can drag around
+            or something. </p>
+        </div>
+        
+        <div class="logItem">
+            <h3>June 15, 2020</h3>
+            <p>I finished my first contest entry two days ago! The
+            music contest greatly increased by coding skills, and
+            I'm very glad that I did it. It took me a whole month,
+            so <a href= "https://www.khanacademy.org/computer-programming/music-life-contest-music/4849309011820544">here it 
+            is</a>.</p>
+        </div>
+        
+        <div class="logItem">
+           <h3> <strong>June 14, 2020</strong> </h3>
+            <p>I created this webpage!</p> 
+        </div>
+        
+    </div>
+    
+    <!--About Page-->
+    <div id="about-content" class="tabcontent">
+    
+        <h2>About</h2>
+        
+        <p>I've been programming on Khan Academy since June 2019,
+           though I <em>really</em> started in March 2020.
+           Other hobbies of mine, in no particular order, are
+           reading, writing, practicing violin, practicing flute,            practicing kalimba, sewing, listening to music
+           (classical, movie soundtracks), learning literally
+           everything about mathematics, learning and helping on
+           Khan Academy, painting and doodling, solving puzzles
+           and riddles, having
+           interesting/weird conversations with friends, 
+           observing nature, ranting about the world,
+           and thinking about Life, the Universe, and Everything
+           until I descend into a cloud of frustration and don't
+           know what anything is anymore. </p>
+           
+         <p>One day I aspire to be either a theoretical
+            mathematician, musician, film scorer, composer,
+            theoretical physicist-cosmologist-astronomer, 
+            writer, programmer, or Khan Academy worker.
+            Oh, and a sorcerer.
+            What do you  <em>mean</em>  I must pick one? </p>
+        
+    </div>
+    
+    <!--bottom right image-->
+    <img id="flowers" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Hepatica_%28PSF%29.svg/120px-Hepatica_%28PSF%29.svg.png">
+    
+    <!--Script-->
+    
+    <!--Tabs-->
+    <script>
+     
+        var openTab = function(evt, tabName) {
+            
+            var tabcontent = 
+            document.getElementsByClassName("tabcontent");
+            for (var i = 0; i < tabcontent.length; i++) {
+                 tabcontent[i].style.display = "none";
+            } 
+            
+            var tablinks = 
+            document.getElementsByClassName("tablinks");
+            for (var i = 0; i < tablinks.length; i++) {
+                 tablinks[i].className = 
+                 tablinks[i].className.replace(" active", "");
+             }
+                 
+            document.getElementById(tabName).style.display =
+            "block";
+            evt.currentTarget.className += " active";
+        
+        };
+        
+        document.getElementById("home").click();
+        
+    </script>
+    
+    <!--Program Data-->
+    <script>
+    
+        var musicLife = {
+        "title": "Music Life",
+        "url": "https://www.khanacademy.org/computer-programming/music-life-contest-music/4849309011820544"
+        };
+        
+        var anomalousAthletics = {
+            "thumb": "/computer-programming/anomalous-athletics-for-contest-sports/6322422372712448/latest.png",
+            "title": "Anomalous Athletics",
+            "url": "https://www.khanacademy.org/computer-programming/anomalous-athletics-for-contest-sports/6322422372712448"
+        };
+        
+        var collatzVisual = {
+            "thumb": "/computer-programming/visualizing-the-collatz-conjecture/4888837312823296/latest.png",
+            "title": "Visualizing Collatz Conjecture",
+            "url": "https://www.khanacademy.org/computer-programming/visualizing-the-collatz-conjecture/4888837312823296"
+        };
+        
+        var mountains = {
+            "title": "Purple Mountains",
+            "url": "https://www.khanacademy.org/computer-programming/purple-mountains/5727562030006272"
+        };
+        
+        var bouncyBalls = {
+            "title": "Summon Bouncy Balls",
+            "url": "https://www.khanacademy.org/computer-programming/summon-bouncy-balls-vectors-and-newtons-laws-test/4764139196661760"
+        };
+        
+        var boredDonut = {
+            "title": "Bored Donut",
+            "url": "https://www.khanacademy.org/computer-programming/bored-donut-random-donut-generator/5095775588728832"
+        };
+        
+        var winstonWantsDonuts = {
+            "title": "Winston Wants Donuts",
+            "url": "https://www.khanacademy.org/computer-programming/winston-wants-donuts/5971498247536640"
+        };
+        
+        var mutualAttractionTest = {
+            "title": "Mutual Attraction Test",
+            "url": "https://www.khanacademy.org/computer-programming/mutual-attraction-test/5596432793223168"
+        };
+        
+        var lSystems = {
+            "title": "L-Systems",
+            "url": "https://www.khanacademy.org/computer-programming/l-systems/6493721087787008"
+        };
+        
+        var recursiveArt = {
+            "title": "Recursive Art",
+            "url": "https://www.khanacademy.org/computer-science/recursive-art/6433165964296192"
+        };
+        
+        var raycastingTest = {
+            "title": "2D Raycasting Test",
+            "url": "https://www.khanacademy.org/computer-programming/2d-raytracing-test/4977454853996544"
+        };
+        
+        var renderingRaycasting= {
+            "title": "Rendering Raycasting",
+            "url": "https://www.khanacademy.org/computer-programming/rendering-raycasting/4822341321572352" 
+        };
+        
+        var eyeThing = {
+            "title": "Eye",
+            "url":  "https://www.khanacademy.org/computer-programming/eye/4576765109944320"
+        };
+        
+        var bestFriends = {
+            "title": "Best Friends",
+            "url":  "https://www.khanacademy.org/computer-programming/best-friends/6331158028435456"
+        };
+        
+        var pixelPusheen = {
+            "title": "Pixel Art Pusheen",
+            "url":  "https://www.khanacademy.org/computer-programming/pixel-art-pusheen/4507557000790016"
+        };
+        
+        var wallie = {
+            "title": "Wallie",
+            "url": "https://www.khanacademy.org/computer-programming/spin-off-of-project-ad-design/4713359676424192"
+        };
+        
+        var flatArtMe = {
+            "title": "Me?",
+            "url": "https://www.khanacademy.org/computer-programming/me/5306349784481792"
+        };
+        
+        var sketchpad = {
+            "title": "Sketchpad Attempt",
+            "url":  "https://www.khanacademy.org/computer-programming/sketchpad/4566069982609408"
+        };
+        
+        var spaceDraw = {
+            "title": "Space Calligraphy",
+            "url": "https://www.khanacademy.org/computer-programming/space-calligraphy/4628888671895552"
+        };
+        
+        var lSystemPlant2 = {
+            "title": "L-Systems: Plant 2",
+            "url":  "https://www.khanacademy.org/computer-programming/l-systems-fractal-plant-2/4561054238851072"
+        };
+        
+        var dragonCurve = {
+            "title": "L-Systems: Dragon Curve",
+            "url":  "https://www.khanacademy.org/computer-programming/l-systems-dragon-curve/4777182630330368"
+        };
+        
+        var mandala = {
+            "title": "Simple Mandala",
+            "url":  "https://www.khanacademy.org/computer-programming/simple-mandala/5313539096526848"
+        };
+        
+         var wordUnscramble = {
+            "title": "Word Unscramble",
+            "url":  "https://www.khanacademy.org/computer-programming/word-unscramble/6240915230638080"
+        };
+        
+        var particleSystemsSystems = {
+            "title": "",
+            "url":  "https://www.khanacademy.org/computer-programming/systems-of-particle-systems-test/6221758005329920"
+        };
+        
+        var randomWalker = {
+            "title": "Random Walker",
+            "url":  "https://www.khanacademy.org/computer-programming/random-walker/6284369200824320"
+        };
+        
+        var masking3DExperiment = {
+            "title": "Masking in 3D Experiment",
+            "url":  "https://www.khanacademy.org/computer-programming/masking-in-3d/5559142860537856"
+        };
+        
+        var animatedBlobs = {
+            "title": "Animated Blobs",
+            "url":  "https://www.khanacademy.org/computer-programming/animated-blobs-spin-off-of-2-dimensional-noise/4697661299048448"
+        };
+        
+         var paintSplatter = {
+            "title": "Paint Splatter",
+            "url":  "https://www.khanacademy.org/computer-programming/spin-off-of-project-paint-splatter/4822356327022592"
+        };
+        
+        var loadingImages = {
+            "title": "Loading Images Experiment",
+            "url":  "https://www.khanacademy.org/computer-programming/trying-to-make-sense-of-the-loading-images-thingy/4768803863216128"
+        };
+        
+        var gosperCurve = {
+            "title": "L-Systems: Gosper Curve",
+            "url":  "https://www.khanacademy.org/computer-programming/gosper-curve-l-systems/6337713171939328"
+        };
+        
+        var firstMandelbrot = {
+            "title": "First Mandelbrot",
+            "url":  "https://www.khanacademy.org/computer-programming/mandelbrot/6723119566635008"
+        };
+        
+        var chaosGame = {
+            "title": "Chaos Games",
+            "url": "https://www.khanacademy.org/computer-programming/chaos-game-sierpinskis-triangle/4578551391928320"
+        };
+        
+        var something = {
+            "title": "Something",
+            "url": "https://www.khanacademy.org/computer-programming/something/6654136398200832"
+        };
+        
+        var fractalTreeArt = {
+            "title": "Fractal Tree Art Project",
+            "url": "https://www.khanacademy.org/computer-programming/fractal-tree-art-project/5920613557157888"
+        };
+        
+        var zozo = {
+            "title": "Zozo",
+            "url": "https://www.khanacademy.org/computer-programming/zozo-coding-hackathon-challenge-1/5585961679142912"
+        };
+        
+        var theWindow = {
+            "title": "The Window",
+            "url": "https://www.khanacademy.org/computer-programming/the-window/4536459891392512"
+        };
+        
+        var bitwiseExperiment = {
+            "title": "Bitwise Operators Experiment",
+            "url": "https://www.khanacademy.org/computer-programming/spin-off-of-a-new-type-of-fractal/6442537680977920"
+        };
+        
+        var stopMotionStudio = {
+            "title": "Stop Motion Studio",
+            "url": "https://www.khanacademy.org/computer-programming/stop-motion-animation-studio/6703260257566720"
+        };
+        
+    </script>
+    
+    <!--Program Data Part 2-->
+    <script>
+        /* template
+        var program = {
+            "title": "",
+            "url":  ""
+        }
+        */
+        var stellarEvolution = {
+            'title': "Stellar Evolution",
+            'url': "https://www.khanacademy.org/computer-programming/stellar-evolution-contest-cycles-of-science/4506223489794048"
+        };
+        var amongUsPixelFont = {
+            "title": "Among Us Pixel Font",
+            "url": "https://www.khanacademy.org/computer-programming/among-us-font/6625535628361728"
+        };
+        var emojiArt = {
+            "title": "Emoji Art",
+            "url":  "https://www.khanacademy.org/computer-programming/emoji-art/6071799747133440"
+        };
+        var lia = {
+            "title": "Lia",
+            "url": "https://www.khanacademy.org/computer-programming/lia-khantober-week-1/6485280581435392",
+        };
+        var inYourFaceJoffrey = {
+            "title": "Font: In Your Face, Joffrey!",
+            "url":  "https://www.khanacademy.org/computer-programming/font-in-your-face-joffrey/4996534654681088"
+        };
+        var reminiscence = {
+            "title": "Reminiscence",
+            "url":  "https://www.khanacademy.org/computer-programming/reminiscence-khantober-week-2/4650954313121792"
+        };
+        var sketchpadEntry = {
+            "title": "Sketchpad",
+            "url": "https://www.khanacademy.org/computer-programming/sketchpad-contest-useful-application-webpage-submissions/5006241551302656"
+        };
+        var spaceDonutFractal = {
+            "title": "Space Donuts",
+            "url":  "https://www.khanacademy.org/computer-programming/space-donuts/6649567165235200"
+        };
+        var flowFieldArt = {
+            "title": "Flow Field Art",
+            "url": "https://www.khanacademy.org/computer-programming/flow-khantober/4802895315419136"
+        };
+        var kitbull = {
+            "title": "Kitbull",
+            "url": "https://www.khanacademy.org/computer-programming/kitbull/4779911661961216"
+        };
+        var inNoctem = {
+            "title": "In Noctem - Into the Night",
+            "url": "https://www.khanacademy.org/computer-programming/in-noctem-into-the-night/5366964820852736"
+        };
+        var winterNight = {
+            "title": "Serene Winter Night",
+            "url": "https://www.khanacademy.org/computer-programming/serene-winter-night/5979125787082752"
+        };
+    </script>
+    
+    <!--Highlights and Art and Others: Content-->
+    <script>
+    
+        var highlights = [
+            musicLife, sketchpadEntry,
+            inNoctem, winterNight,
+            lia, stellarEvolution, 
+            anomalousAthletics, 
+            stopMotionStudio
+        ];
+        
+        var artProjects = [
+            musicLife, sketchpadEntry,
+            inNoctem, anomalousAthletics,
+            winterNight,
+            stellarEvolution, lia,
+            flatArtMe, recursiveArt, 
+            lSystems, gosperCurve, 
+            theWindow, collatzVisual, 
+            spaceDonutFractal, flowFieldArt,
+            firstMandelbrot, chaosGame,
+            kitbull,
+            mountains, fractalTreeArt,
+            bestFriends, 
+            lSystemPlant2, dragonCurve,
+            zozo, emojiArt,
+            eyeThing, pixelPusheen, 
+            sketchpad, mandala,
+            spaceDraw, wallie
+        ];
+        
+        var others = [
+            inYourFaceJoffrey, amongUsPixelFont, 
+            loadingImages, renderingRaycasting, 
+            mutualAttractionTest, bouncyBalls,
+            bitwiseExperiment,
+            something, masking3DExperiment,
+            wordUnscramble, boredDonut,
+            winstonWantsDonuts, particleSystemsSystems, 
+            paintSplatter, randomWalker, 
+            animatedBlobs,
+        ];
+        
+    </script>
+    
+    <!--Program Image Links-->
+    <script>
+    
+        var highlightsList=document.getElementById("best-projects");
+        var artList = document.getElementById("art-images");
+        var othersList = document.getElementById("other-projects");
+        
+        function displayProjects(listEl, projectsList) {
+            for (var i = 0; i < projectsList.length; i++) {
+                var image = document.createElement("img");
+                image.src = projectsList[i].url + "/latest.png";
+                          
+                var title = document.createElement("h4");
+                title.innerHTML = projectsList[i].title;
+                          
+                var link = document.createElement("a");
+                link.href = projectsList[i].url;
+                
+                link.target = "_blank";   
+                link.appendChild(image);
+                link.appendChild(title);
+            
+                var imageItem = document.createElement("li");
+                imageItem.appendChild(link);
+                listEl.appendChild(imageItem);
+            }
+        }
+        
+        displayProjects(highlightsList, highlights);
+        
+        displayProjects(artList, artProjects);
+        
+        displayProjects(othersList, others)
+        
+    </script>
+
+    </body>
+    
+</html>

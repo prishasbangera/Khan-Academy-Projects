@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Improv</title>
+    <!--p5.js source-->
+    <script src="https://cdn.jsdelivr.net/gh/Steffan153/files/p5-ka.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: black;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="">
+    
+/** https://www.khanacademy.org/computer-programming/improv/6552825817415680?width=600&height=600 **/
+        
+/** START - P5.JS CODE **/
+            
+var counter = 0;
+
+// get index of pixel in pixels array with x and y coordiantes 
+function ind(x, y, w = width) {
+    return (x + y*w) * 4;
+}
+
+// get color at a specific index in the pixel array
+// returns [r, g, b]
+function getClr(index, instance = this) {
+    return Array(4).fill(index).map((el, ind) => instance.pixels[el + ind]);
+}
+
+// sets or adds to the color of a pixel
+// pass in [r, g, b, a] and index
+function setClr(clr, index, instance = this) {
+    clr.forEach((el, ind) => {
+        instance.pixels[index + ind] = el;
+    });
+}
+
+// draws a masked texture
+// according to msk image with dimensions width by height
+// and function changeClr([r,g,b,a], grayVal, x, y, index) to change pixel color
+// pass in sourceImage (optional)
+function maskedTexture(msk, changeClr, sourceImg = this) { 
+    if (msk) msk.loadPixels();
+    sourceImg.loadPixels();
+    for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+            const i = ind(x, y);
+            const clr = getClr(i, sourceImg);
+            if (msk) {
+                const grayVal = 1/3 * getClr(i, msk).reduce((a,x,ind,ar) => ind<ar.length-1?x+a:a);
+                if (grayVal > 100) {
+                    setClr(changeClr(clr, grayVal, x, y, i), i, sourceImg);
+                }
+            } else {
+                setClr(changeClr(clr, 255, x, y, i), i, sourceImg);
+            }
+        }
+    }
+    sourceImg.updatePixels();
+    if (msk) msk.updatePixels();
+}
+
+var bird = function() {
+    const img = createGraphics(width, height);
+    img.background(0);
+    img.noStroke();
+    img.stroke(199);
+    img.strokeWeight(20);
+    img.fill(245);
+    img.beginShape();
+        img.vertex(0, img.height);
+        img.curveVertex(0, img.height);
+        img.curveVertex(75, 228);
+        img.curveVertex(348, 82);
+        img.curveVertex(531, 139);
+        img.curveVertex(410, 193);
+        img.curveVertex(440, 318);
+        img.curveVertex(320, 466);
+        img.curveVertex(493, 606);
+        img.curveVertex(100, 400);
+    img.endShape();
+    
+    img.stroke(199);
+    img.fill(200);
+    img.beginShape();
+        img.vertex(img.width/2, img.height/2);
+        img.curveVertex(184, 206);
+        img.curveVertex(252, 151);
+        img.curveVertex(347, 200);
+        img.curveVertex(269, 307);
+        img.curveVertex(183, 295);
+        img.curveVertex(184, 206);
+        img.curveVertex(194, 206);
+    img.endShape();
+    
+    img.fill(255);
+    img.beginShape();
+        img.vertex(img.width/2, img.height/2);
+        img.curveVertex(206, 244);
+        img.curveVertex(258, 178);
+        img.curveVertex(299, 218);
+        img.curveVertex(247, 269);
+        img.curveVertex(206, 243);
+        img.curveVertex(211, 235);
+    img.endShape();
+    return img;
+};
+
+var linesImg = function() {
+    const img = createGraphics(width, height);
+    img.background(0, 0);
+    img.strokeWeight(1);
+    for (let i = 0; i < 1000; i++) {
+        img.stroke(random(255), random(255), random(255), 50);
+        img.line(random(width), random(height),
+                 random(width), random(height));
+    }
+    return img;
+};
+
+var pieces = [
+    // background and setup
+    function() {
+        // squares
+        colorMode(HSB, 255);
+        for (let i = 0; i < 150; i++) {
+            let hu = random(70);
+            strokeWeight(20);
+            stroke(225-hu, 175, 255, 100);
+            fill(hu, 255, 255, 100);
+            rect(random(width), random(height),
+                 random(50, width/3), random(50, height/3)); 
+        }
+        colorMode(RGB);
+    },
+    // pixel data manipulation
+    function() {
+        maskedTexture(null, (clr, g, x, y) => {
+            return clr.map(el => {
+                let v = el;
+                const _x = x - width/2, _y = y-height/2;
+                v += tan(el) * tan(el);
+                v += tan(dist(_x, _y, 0, 0)) * 20 * 
+                    abs(15*atan2(_x, _y) % 3);
+                v = Math.max(v*1.2, el);
+                return v;
+            });
+        });
+    },
+    // rays
+    function() {
+        let img = createGraphics(width, height);
+        img.background(0, 0);
+        img.translate(260, 230);
+        img.fill(255, 50);
+        img.noStroke();
+        img.angleMode(DEGREES);
+        for (let i = 0; i <= 360; i+=5) {
+            img.push();
+            img.rotate(i+random(-5, 5));
+            img.ellipse(0, 0, random(width*1.5, width*2), 15);
+            img.pop();
+        }
+        image(img, 0, 0);
+    },
+    // lines
+    function() {
+        maskedTexture(bird, (clr, g, x, y, i) => {
+            clr[3] = random(g);
+            return clr;
+        }, linesImg);
+        image(linesImg, 0, 0);
+    },
+    // bird
+    function() {
+        noiseSeed(21); //21, 25
+        let c = [145, 81, 80, 50], d = [315, 151, 110];
+        maskedTexture(bird, (clr, g, x, y)=>clr.map((el, index)=>{
+            if (g < 200) return el+c[index];
+                else if (index === clr.length-1) return g;
+                else return abs(255-y/400*(el+d[index])*noise(x/100, y/100)*2);
+        }));
+    },
+    // circle texture
+    function() {
+        let img = createGraphics(width, height);
+        const w = img.width, h = img.height;
+        img.background(0);
+        img.noStroke();
+        img.rectMode(CENTER);
+        randomSeed(111);
+        for (let i = 0; i < 100; i++) {
+            const s = random(100);
+            img.fill(255, random(100, 200));
+            img.ellipse(random(w), random(h), s);
+            if (random(1) < 0.1) {
+                img.fill(0, random(100, 255));
+                img.ellipse(random(w), random(h), s/2);
+            }
+        }
+        maskedTexture(img, (clr, g, x, y)=>clr.map((el, index)=>{
+            return el*1.5 - Math.random()*el*0.68;
+        }));
+    },
+    // around eye
+    function() {
+        const img = createGraphics(width, height);
+        img.background(0);
+        img.noStroke();
+        img.fill(255, 100)
+        img.translate(258, 231);
+        for (let i = 0; i < 1700; i++) {
+            const x = randomGaussian(0, 300);
+            const y = randomGaussian(0, 300);
+            img.ellipse(x, y, map(dist(x, y, 0, 0)+random(-10, 10), 0, 300, 60, 1));
+        }
+        maskedTexture(img, (clr, g, x, y)=>clr.map((el, index)=>
+            el + el*noise(x/1000, y/1000)*random(2)
+        ));
+    },
+    // square noise texture
+    function() {
+        const img = createGraphics(width, height);
+        img.background(0);
+        img.strokeWeight(3);
+        img.rectMode(CENTER);
+        img.fill(255, 100);
+        img.stroke(0, 100);
+        for (let n = 0; n < 1000; n++) img.rect(random(img.width), random(img.height), random(5, 50), random(5, 50))
+        maskedTexture(img, (clr, g, x, y)=>clr.map((el,i)=>{
+            return el + random(50, 80)*sin(0.5*i*g*noise(x/100, y/100));
+        }));
+    }
+];
+
+// setup
+p5.disableFriendlyErrors = true;
+function setup() {
+    createCanvas(600, 600);
+    pixelDensity(1);
+    background(255);
+    background(156, 0, 199);
+    rectMode(CENTER);
+    randomSeed(31);
+    bird = bird();
+    linesImg = linesImg();
+}
+
+function draw() {
+    if (pieces[counter]) {
+        pieces[counter]();
+        counter++;
+    } else {
+        noLoop();
+    }
+}
+
+/** END - P5.JS CODE **/
+
+
+    </script>
+  </body>
+</html>

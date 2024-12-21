@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Thumbnail saver by Spencer Kuan -->
+		<!-- Sources for Learning: 
+		
+		  https://webgl2fundamentals.org/webgl/lessons/webgl-fundamentals.html
+
+		  http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
+
+		  https://michaelwalczyk.com/blog-ray-marching.html
+
+		  https://www.iquilezles.org/www/articles/normalsSDF/normalsSDF.htm
+
+		  https://www.youtube.com/watch?v=PGtv-dBi2wE
+		
+		  https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
+		
+		  https://www.khanacademy.org/computer-programming/live-raymarching/6746935608164352
+		
+		-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Bubblegum WebGL Raymarching</title>
+    <!--Helper functions-->
+		<script type="">
+		  
+		  // resize canvas to fill window size and set viewport
+		  function resizeCanvas(gl, resolutionUniLoc) {
+      	if (gl.canvas.width !== window.innerWidth ||
+      		  gl.canvas.height !== window.innerHeight) {
+      		// size canvas to innerwidth, innerheight
+      		gl.canvas.width = window.innerWidth;
+      		gl.canvas.height = window.innerHeight;
+      		// set viewport
+      		gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+      		// pass in resolution
+      		gl.uniform2fv(resolutionUniLoc, [gl.canvas.width, gl.canvas.height]);
+      	}
+      }
+      
+      // get webgl2 context
+      function getWEBGL2(canvasId) {
+      	const canvas = document.getElementById(canvasId);
+      	const gl = canvas.getContext("webgl2");
+      	if (gl) {
+      		return gl;
+      	}
+      	else console.log("No WebGL2 for you! :(((")
+      }
+      
+      function createShader(gl, srcId) {
+      	// get source
+      	const scriptTag = document.getElementById(srcId);
+      	const source = scriptTag.text;
+      	if (!source) {
+      		console.log("Unknown script element.");
+      		return;
+      	}
+      	// get type of source
+      	let type;
+      	if (scriptTag.type === "x-shader/x-vertex") {
+      		type = gl.VERTEX_SHADER;
+      	} else if (scriptTag.type === "x-shader/x-fragment") {
+      		type = gl.FRAGMENT_SHADER;
+      	} else {
+      		console.log("Wrong type for script tag.");
+      	}
+      	// create shader, set source code, and compile
+      	const shader = gl.createShader(type);
+      	gl.shaderSource(shader, source);
+      	gl.compileShader(shader);
+      	// check if success
+      	if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      		return shader;
+      	} else {
+      		// log error and delete shader
+      		console.log(gl.getShaderInfoLog(shader));
+      		gl.deleteShader(shader);
+      	}
+      }
+      
+      // link two shaders into a program
+      function createProgram(gl, vsId, fsId) {
+      	const program = gl.createProgram();
+      	// create and attach shaders
+      	const vShader = createShader(gl, vsId);
+      	const fShader = createShader(gl, fsId);
+      	gl.attachShader(program, vShader);
+      	gl.attachShader(program, fShader);
+      	// link and validate
+      	gl.linkProgram(program);
+      	gl.validateProgram(program);
+      	// check
+      	if (gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      		return program;
+      	} else {
+      		// log error and delete program
+      		console.log(gl.getProgramInfoLog(program));
+      		gl.deleteProgram(program);
+      	}
+      }
+      
+      function attribute(gl, program, name, size, type, normalize, stride = 0, offset = 0) {
+      	const location = gl.getAttribLocation(program, name);
+      	gl.enableVertexAttribArray(location);
+      	gl.vertexAttribPointer(location, size, type, normalize, stride, offset);
+      	return location;
+      }
+      
+      function buffer(gl, target, data, usage) {
+      	const b = gl.createBuffer();
+      	gl.bindBuffer(target, b);
+      	gl.bufferData(target, data, usage);
+      	return b;
+      }
+      
+      function texture(gl) {
+      
+      	const texture = gl.createTexture();
+      	gl.bindTexture(gl.TEXTURE_2D, texture);
+      
+      	// options for texture
+      	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      
+      	return texture;
+      	
+      }
+      
+      function programLog(gl, program) {
+      	const log = gl.getProgramInfoLog(program);
+      	if (log.length > 0) {
+      		console.log(log);
+      		return true;
+      	}
+      }
+      
+		</script>
+  </head>
+  <body style="margin: 0px; overflow: hidden;">
+  
+		<canvas id="canvas"></canvas>
+		
+		<!--Vertex Shader-->
+		<script id="vs" type="x-shader/x-vertex">#version 300 es
+      in vec4 a_position;
+      void main() {
+      	gl_Position = a_position;
+      }
+		</script>
+		
+		<!--Fragment Shader-->
+		<script id="fs" type="x-shader/x-fragment">#version 300 es
+      precision highp float;
+      
+      uniform vec2 u_resolution;
+      uniform float u_time;
+      uniform vec3 u_cameraPosition;
+      
+      // for raymarching
+      const float EPSILON = 0.001;
+      int MAX_STEPS = 40;
+      float DIST_FOR_HIT = 0.007;
+      float MAX_DIST = 1000.0;
+      
+      // LIGHT
+      
+      float SPECULAR = 50.0;
+      
+      // struct for light
+      // type 0 = ambient, 1 = directional, 2 = point
+      struct Light {
+      	int type;
+      	// intensity of light 0 to 1
+      	float intensity;
+      	// if type = 1, specify direction, if type = 2, specify position, if type = 0, it doesn't matter
+      	vec3 posOrDir;
+      };
+      
+      // array of lights
+      Light lights[4];
+      
+      // output
+      out vec4 outColor;
+      
+      // calculate ray direction
+      vec3 calculateRayDirection(vec2 fragCoord, vec2 res) {
+      	vec2 uv = (fragCoord - 0.5*res) / min(res.x, res.y);
+      	vec3 dir = normalize(vec3(uv, 1));
+      	return dir;
+      }
+      
+      // get color of point
+      vec3 getColorOfPoint(vec3 pt) {
+      	//return vec3(0.855, 0.439, 0.839);
+      	float t = u_time * 0.001;
+      	return vec3(-sin(t * 2.0 - pt.y) * 0.5 + 1.0, sin(t - pt.x) * 0.5 + 1.0, -cos(t - pt.z) * 0.5 + 1.0) * vec3(0.7);
+      }
+      
+      // Intersect, union, difference
+      
+      float intersectSDF(float dist1, float dist2) {
+      	return max(dist1, dist2);
+      }
+      
+      float unionSDF(float dist1, float dist2) {
+      	return min(dist1, dist2);
+      }
+      
+      float differenceSDF(float dist1, float dist2) {
+      	return max(dist1, -dist2);
+      }
+      
+      // SDF for sphere
+      float sphereSDF(vec3 pt, vec3 center, float radius) {
+      	return length(pt - center) - radius;
+      }
+      
+      // SCENE SDF
+      float sceneSDF(vec3 pt) {
+      
+      	float t = u_time * 0.0015;
+      	float n = (sin(t) + 1.0) * 2.5;
+        float displacement0 = sin(n * pt.x + t) * sin(n * pt.y + t) * sin(n * pt.z + t) * 0.21;
+        float displacement1 = sin(pt.z * pt.y + t*6.0) * 0.11;
+        
+      	float bigSphere = sphereSDF(pt, vec3(0, 0, 5), 1.5);
+      	
+      	float sphere1 = sphereSDF(pt, vec3(2.3, 0, 4), 0.6);
+      	float sphere2 = sphereSDF(pt, vec3(-2.3, 0, 4), 0.6);
+      
+      	return min(
+      	  bigSphere + displacement1, 
+      	  min(sphere1, sphere2) + displacement0
+      	);
+      	
+      }
+      
+      vec3 calcNormal(vec3 pt) {
+        const vec2 h = vec2(EPSILON, 0);
+      	// central difference sdf(pt + EPSILON) - sdf(pt - EPSILON)
+      	return normalize(vec3(
+      		// x component
+      		sceneSDF(pt + h.xyy) - sceneSDF(pt - h.xyy),
+      		// y component
+      		sceneSDF(pt + h.yxy) - sceneSDF(pt - h.yxy),
+      		// z component
+      		sceneSDF(pt + h.yyx) - sceneSDF(pt - h.yyx)
+      	));
+      }
+      
+      vec3 calcColor(vec3 pt, vec3 ptToOrigin) {
+      	vec3 normal = calcNormal(pt);
+      	float lighting = 0.0;
+      	for (int i = 0; i < lights.length(); i++) {
+      		Light curr = lights[i];
+      		// ambient -> just add intensity
+      		if (curr.type == 0) {
+      			lighting += curr.intensity;
+      		} else {
+      			vec3 lightVector;
+      			if (curr.type == 1) {
+      				// directional -> light vec same for all points
+      				lightVector = normalize(curr.posOrDir);
+      			} else if (curr.type == 2) {
+      			 	// point light -> pt to light
+      				lightVector = normalize(curr.posOrDir - pt);
+      			}
+      			// when dot product is 1, full intensity since light is directly hitting point at a perpendicular angle
+      			// when dot product is 0, light parallel to surface
+      			float normalDotLight = dot(normal, lightVector);
+      			// diffuse
+      			if (normalDotLight > 0.0) {
+      				lighting += curr.intensity * normalDotLight / (length(normal) * length(lightVector));
+      			}
+      			// specular
+      			if (SPECULAR > 0.0) {
+      				vec3 reflection = 2.0 * normal * normalDotLight - lightVector;
+      				float reflectionDotPtToOrigin = dot(reflection, ptToOrigin);
+      				if (reflectionDotPtToOrigin > 0.0) {
+      					lighting += curr.intensity * pow(reflectionDotPtToOrigin / (length(reflection) * length(ptToOrigin)), SPECULAR);
+      					//lighting += curr.intensity * SPECULAR * pow(reflectionDotPtToOrigin, SPECULAR);
+      				}
+      			}
+      		}
+      	}
+      	return clamp(getColorOfPoint(pt) * lighting, vec3(0), vec3(1));
+      }
+      
+      vec3 rayMarch(vec3 rayOrigin, vec3 rayDirection) {
+      
+        float distTraveled = 0.0;
+      	for (int i = 0; i < MAX_STEPS; i++) {
+      		// find the current position for this step
+      		vec3 currPos = rayOrigin + distTraveled * rayDirection;
+      		// calculate sdf
+      		float sdf = sceneSDF(currPos);
+      		// if sdf <= minimum distance for hit, return color
+      		if (sdf < DIST_FOR_HIT) {
+      			return calcColor(currPos, -rayDirection);
+      		}
+      		// else if distance traveled greater than max, no hit, so break
+      		if (distTraveled > MAX_DIST) {
+      			break;
+      		}
+      		// add to distance
+      		distTraveled += sdf;
+      	}
+      
+      	// if loop completed or broken out of, no hit
+      	return vec3(0);
+      
+      }
+      
+      void main() {
+      
+      	// init light array
+      	lights[0] = Light(0, 0.2, vec3(0));
+      	lights[1] = Light(1, 0.2, vec3(2, 2, -1));
+      	lights[2] = Light(2, 0.3, vec3(-7, -7, -3));
+      	lights[3] = Light(2, 0.7, vec3(2, 2, -3));
+      
+      	vec3 rayDir = calculateRayDirection(gl_FragCoord.xy, u_resolution);
+      
+      	outColor = vec4(rayMarch(u_cameraPosition, rayDir), 1);
+      
+      }
+      
+		</script>
+		
+    <!-- By Spencer Kuan, based on the autosaver by BlueBird -->
+    <script>
+        
+      function saveThumbnail() {
+        if(window.saveDaCanvas) {
+          const altCanvas = document.createElement("canvas");
+          altCanvas.width = 400;
+          altCanvas.height = 400;
+          var altCtx = altCanvas.getContext("2d");
+          (function(){
+            altCtx.drawImage(
+              document.getElementById("canvas"), 
+              150, 0, 400, 400, 0, 0, 400, 400
+            );
+            const b64Img = altCanvas.toDataURL();
+            window.top.postMessage(b64Img, "https://www.khanacademy.org/");
+          })();
+          window.saveDaCanvas = false;
+        }
+      }
+      
+      (function() {
+        function handleSave(e) {
+          if (JSON.parse(e.data).screenshot) {
+            setTimeout(function() {
+              window.saveDaCanvas = true;
+              console.log("Saving...");
+            }, 1000)
+          }
+        }
+        window.parent.savers = window.parent.savers || 0;
+        window.parent.addEventListener("message", handleSave);
+        window.parent.savers += 1;
+        for (window.parent.savers; window.parent.savers > 1; window.parent.savers -= 1) {
+          window.parent.removeEventListener("message", handleSave)
+        }
+      })();
+      
+    </script>
+		
+		<!--Main-->
+    <script type="">
+    
+      function main() {
+      
+      	/**INIT**/
+      	
+      	// get context
+      	const gl = getWEBGL2("canvas");
+      	if (!gl) return;
+      
+      	const width = gl.canvas.width;
+      	const height = gl.canvas.height;
+      
+      	// create program
+      	const prog = createProgram(gl, "vs", "fs");
+      
+      	// uniform resolution
+      	const resUniLoc = gl.getUniformLocation(prog, "u_resolution");
+      
+      	// time uniform
+      	const timeUniLoc = gl.getUniformLocation(prog, "u_time");
+      
+      	// camera position uniform
+      	const camUniLoc = gl.getUniformLocation(prog, "u_cameraPosition");
+      
+      	// position buffer
+      	const positions = [
+      		-1, 1, -1, -1, 1, 1,
+      		-1, -1, 1, -1, 1, 1
+      	];
+      	const positionBuffer = buffer(gl, gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+      	// position attribute
+      	const posAttrLoc = attribute(gl, prog, "a_position", 2, gl.FLOAT, false, 0, 0);
+      
+      	// Clear the canvas
+      	gl.clearColor(0, 0, 0, 1);
+      	gl.clear(gl.COLOR_BUFFER_BIT);
+      
+      	// use program
+      	gl.useProgram(prog);
+      	
+      	resizeCanvas(gl, resUniLoc);
+      
+      	/* UPDATE */
+      
+      	const camPos = [0, 0, 0];
+      	const s = 0.1;
+      
+      	// loop
+      	function drawScene(time) {
+      		resizeCanvas(gl, resUniLoc);
+      		// pass in time
+      		gl.uniform1f(timeUniLoc, time);
+      		// pass in camera position
+      		gl.uniform3fv(camUniLoc, camPos);
+      		// draw
+      		gl.drawArrays(gl.TRIANGLES, 0, positions.length / 2);
+      		// save thumbnail by Spencer Kuan
+      		saveThumbnail();
+      		// log errors -> returns true if error
+      		if (!programLog(gl, prog)) {
+      			window.requestAnimationFrame(drawScene);
+      		}
+      	}
+      
+      	// init draw scene
+      	window.requestAnimationFrame(drawScene);
+      
+      }
+      
+      main();
+      
+    </script>
+    
+  </body>
+</html>

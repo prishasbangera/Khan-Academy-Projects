@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>ASCII Art Maybe</title>
+        <!--p5.js source-->
+        <script src="https://cdn.jsdelivr.net/gh/NovaSagittarii/misc@1.0.2/p5.min.js"></script>
+        <style>
+            body {
+                padding: 0px;
+                margin: 0px;
+                overflow: hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <script type="">
+        
+            var img;
+            var scl = 3;
+            
+            //mediocre character chart, dark to light
+            var chars = "$B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`\'. ";
+            
+            //load the image
+            function preload() {
+                img = loadImage("https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/The_Earth_seen_from_Apollo_17.jpg/250px-The_Earth_seen_from_Apollo_17.jpg");
+            }
+            
+            function setup() {
+                
+                createCanvas(600, 400);
+                textSize(scl);
+                
+                //draw image
+                const buffer = createGraphics(400, 400);
+                buffer.image(img, 0, 0, 
+                             buffer.width, buffer.height);
+                
+                //for each pixel
+                buffer.loadPixels();
+                for (let x = 0; x < buffer.width; x+=scl) {
+                    for (let y = 0; y < buffer.height; y+=scl) {
+                        //find index
+                        const i = (x+y*buffer.width) * 4;
+                        //get greyscale by finding average
+                        const bright = (buffer.pixels[i + 0] +
+                                        buffer.pixels[i + 1] +
+                                        buffer.pixels[i + 2]) / 3;
+                        //find character according to bright
+                        const char = floor(lerp(
+                            0, chars.length,
+                            map(bright, 0, 255, 0, 1)
+                        ));
+                        //draw the character at this pos
+                        text(chars.charAt(char), x, y);
+                    }
+                }
+                buffer.updatePixels();
+                
+                //draw the img in grayscale
+                buffer.filter(GRAY);
+                image(buffer, width-(buffer.width/2), 
+                      buffer.height/2,
+                      buffer.width/2, buffer.height/2);
+                //draw the image
+                image(img, width-(buffer.width/2), 0,
+                      buffer.width/2, buffer.height/2);
+                
+            }
+            
+        </script>
+    </body>
+</html>

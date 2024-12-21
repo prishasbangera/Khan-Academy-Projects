@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Lunar City!</title>
+        <style>
+            body {
+               background:black;
+            }
+            div {
+                margin-top: 339px;
+                z-index: 1;
+                background: rgba(64, 6, 64, 0.5);
+                padding-bottom: 20px;
+                padding-top: 11px;
+                padding-left: 20px;
+                padding-right: 20px;
+                margin-left: -11px;
+                margin-right: -18px;
+            }
+            div:hover {
+                background: rgba(64, 6, 64, 0.8);
+            }
+            
+            h1 {
+                color:rgb(114, 43, 255);
+                font-family: AR CHRISTY, monospace;
+                background-color: rgba(255, 255, 76);
+                margin-left: -3px;
+                margin-top: -334px;
+                padding: 134px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                position: fixed;
+                border: ridge gold;
+                border-radius: 30px;
+                
+            }
+            h1:hover {
+                background-color: rgb(255, 249, 138);
+                
+            }
+            
+            #city-img {
+                margin-left: -22px;
+                width: 307px;
+                padding-left: 143px;
+                padding-right: 152px;
+                background: rgba(71, 8, 71, 1) ;
+            }
+            #city-img:hover {
+                background: rgb(87, 2, 87, 1);
+                border: ridge rgb(140, 43, 140);
+            }
+            
+            h2 {
+                color:rgb(187, 153, 255);
+                font-family: AR CHRISTY, monospace;
+            }
+            
+            p {
+                color: white;
+                font-family: ink free light;
+                font-size: 18px;
+                margin: 21px;
+            }
+            #lunar-city-description {
+                color: lightgreen;
+            }
+            #trip-is-truly {
+                color: lightgreen;
+            }
+            #outta-this-world {
+                color:rgb(0, 255, 0);
+                font-size: 29px;
+            }
+            .outta-this-world-quote {
+                color: lightgreen;
+                font-size: 20px;
+            }
+            #description {
+                font-family: AR CHRISTY, monospace;
+                color: rgb(0, 255, 0);
+            }
+            
+            #places-to-visit {
+                color:yellow;
+                margin-bottom: -15px;
+                margin-top: 28px;
+            }
+            #list-places {
+                color:yellow;
+            }
+            ol {
+                color:rgb(187, 153, 255);
+                font-family: ink free heavy;
+            }
+            ul {
+                float:left;
+                font-family: ink free;
+                background: rgba(194, 194, 194, 0.25);
+                width: 280px;
+                height: 257px;
+                overflow-y: auto;
+                padding-top: 8px;
+                padding-bottom: 4px;
+                padding-left: 30px;
+                border-radius: 30px;
+            }
+            ul:hover {
+                background: rgba(194, 194, 194, 0.5);
+            }
+            ul li:hover {
+                color: rgb(244, 250, 77);
+                font-weight: bold;
+                background: rgba(194, 194, 194, 0.3);
+                
+            }
+            
+            .small-img {
+                width: 227px;
+                margin-left: 9px;
+                margin-bottom: 6px;
+                border: ridge purple 4px;
+                border-radius: 30px;
+            }
+            #moon {
+                width: 375px;
+                position: fixed;
+                top: 41px;
+                left: 109px;
+                opacity: 0.5;
+                z-index: -1;
+            }
+            
+
+        </style>
+    </head>
+    <body>
+    <img id="moon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/1200px-FullMoon2010.jpg" alt="moon background">
+        
+        <h1>Travel to Lunar City!</h1>
+        
+    <div>    
+    <img id="city-img"src="https://upload.wikimedia.org/wikipedia/commons/2/23/ISS-35_Night_image_of_Paris%2C_France.jpg" width="278" alt="a top view of Lunar City">
+    
+        <h2>The FIRST City on the Moon, est. 2054</h2>
+        
+        <h3 id="description">Lunar City?</h3>
+        <p id="lunar-city-description">
+            Since 2025, mankind endeavored to build the first lunar base and then an inhabitable city on the Moon. <strong>Now it has become a <em>reality</em>!</strong> Visit the Moon and glory in its greatness! Experience what it's like to be in space. Gaze upon the beauty of the Earth!
+        </p>
+        <p>
+        <span id="trip-is-truly" class="outta-this-world-quote">A trip to Lunar City is truly <strong id="outta-this-world" class="outta-this-world-quote">out of this world!</strong> </span>
+        </p>
+        <h2 id="places-to-visit">Places to Visit!</h2>
+        <ul id="list-places">
+            <li>Lunar Horizon Sky Diving</li>
+            <li>Exquisite Restaurante<br> - Indulge in the new                 lunar cuisine while enjoying an amazing view of the                Earth and stars!</li>
+            <li>Moon Hiking Trail <br> - See the first astronauts'             footprints on the Moon! Scale the cliffs! Contribute               <strong><em>your</em></strong> footprint to our                    collection!
+            </li>
+            <li>Lunar Rock Park <br> - Tour remakes of famous                  monuments on Earth, including Mount Rushmore, the                  Pyramids of Giza, the Taj Mahal, and more! Also                    featured are original lunar monuments created by Luna              Silvertail, the first girl born on the Moon.</li>
+            <li id="more"><strong><em>And so much                              more!!!</em ></strong></li>
+        </ul>
+        <img class="small-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Hawkmen%27s_sky_city_in_Flash_Gordon_serial_%281936%29.png/280px-Hawkmen%27s_sky_city_in_Flash_Gordon_serial_%281936%29.png" width="200" alt="Lunar City on the Moon's surface from afar">
+        <img class="small-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/01LunarHouse.png/220px-01LunarHouse.png" width="217" alt="two typical lunar houses on the Moon">
+        
+        <h2>Apply for the Lunar Space Tour Prize Raffle <br> - One         Winner Chosen Every Week!</h2>
+        <ol>
+            <li>Go to www.lunarspaceraffle.com.</li>
+            <li>Enter your details.</li>
+            <li>Tell us about what you would like to see on the                Moon.</li>
+            <li><strong>YOU</strong> can win a vacation to Lunar               City, all expenses paid, for up to five people! See                website for more details. </li>
+            
+        </ol>
+        
+        <p>
+    We want everyone to be able to experience the wonder of Lunar City. If you are planning a university  field trip or are not able to accomodate for expenses, apply for our <strong >Lunar Financial Aid</strong> program. This program will also assist you if you wish to make your home here on the Moon. Details about this program and eligibility are available on www.lunarfinancialaid.com.
+        </p>
+        </div>
+    </body>
+</html>
