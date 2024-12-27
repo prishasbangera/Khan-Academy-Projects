@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Word Unscramble</title>
+        <style>
+            body {
+                background: rgb(188,211,253);
+                font-family: "Trebuchet MS", monospace;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            h1 {
+                text-align: center;
+                transition: letter-spacing 1s;
+            }
+            
+            h1:hover {
+                letter-spacing: 3px;
+            }
+            
+            #forms-div {
+                margin: 20px;
+                vertical-align: sub;
+                padding: 28px;
+                border-radius: 10px;
+                background: rgb(219, 232, 255);
+            }
+            
+            .result {
+                border: 2px dotted;
+                text-align: center;
+                font-size: 18px;
+                height: 29px;
+                padding-top: 5px;
+            }
+
+            .scrambled {
+                font-size: 16px;
+            }
+            
+            details summary {
+                outline: none;
+                cursor: pointer;
+                margin-top: 5px;
+                margin-bottom: 17px;
+            }
+            
+            details:focus {
+                outline: none;
+                background: white;
+            }
+            
+            input[type=text] {
+                text-transform: uppercase;
+                border: none;
+                border-radius: 5px;
+                padding: 10px;
+                margin: 9px;
+                width: 187px;
+                outline: none;
+            }
+            
+            input[type=text]:focus {
+                background: rgb(251, 255, 178);
+            }
+            
+            button {
+                cursor: pointer;
+                outline: none;
+                border: none;
+                border-radius: 7px;
+                padding: 7px;
+                margin: 5px;
+                background-color: #1865f2;
+                font-weight: bold;
+                color: white;
+                font-family: inherit;
+                transition: background-color 0.4s;
+            }
+            
+            button:hover {
+                background-color: rgb(5, 128, 252);
+            }
+            
+            button:focus {
+                border: 2px solid white;
+                
+            }
+            
+        </style>
+    </head>
+    <body>
+    
+    <h1>Word Unscramble: Fractals</h1>
+    
+    <div id="forms-div">
+    
+    <!--Dragon Form-->
+    
+    <form id="dragon-form" autocomplete="off">
+        <label>
+            <span class="scrambled">GCONED RURAV</span>
+            <input type="text" placeholder="Enter answer here"
+                   id ="dragon-answer">
+        </label>
+        <button type="submit">Check</button>
+    </form>
+    
+    <div class="result" id="dragon-result"></div>
+    
+    <details>
+        <summary>Hint</summary>
+        <p>The second word starts with "C."
+    </details>
+    
+    <!--Koch Form-->
+    
+    <form id="koch-form" autocomplete="off">
+        <label>
+            <span class="scrambled">SLOW CHOKEKAN</span>
+            <input id="koch-answer"
+                   placeholder="Enter answer here" type="text">
+        </label>
+        <button type="submit">Check</button>
+    </form>
+    
+    <div class="result" id="koch-result"></div>
+    
+    <details>
+        <summary>Hint</summary>
+        <p>The first word starts with "K."
+    </details>
+    
+    <!--Mandelbrot Form-->
+    <form id="mandelbrot-form" autocomplete="off">
+        <label>
+            <span class="scrambled">BANDTRLOME</span>
+            <input id="mandelbrot-answer"
+                   placeholder="Enter answer here" type="text">
+        </label>
+        <button type="submit">Check</button>
+    </form>
+    
+    <div class="result" id="mandelbrot-result"></div>
+    
+    <details>
+        <summary>Hint</summary>
+        <p>The last letter is "T."</p>
+    </details>
+    
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+    
+        //hide all the results on load
+        $(".result").hide();
+        
+        //hide dragon result when user is changing answer
+        $("#dragon-answer").on("input", function() {
+            $("#dragon-result").hide();
+        });
+        
+        //hide koch result when user is changing answer
+        $("#koch-answer").on("input", function() {
+            $("#koch-result").hide();
+        });
+        
+        //hide mandelbrot result when user is changing answer
+        $("#mandelbrot-answer").on("input", function() {
+            $("#mandelbrot-result").hide();
+        });
+        
+        //a function to display win message
+        function displayWin(result) {
+            result
+                .text("Yay! You got it! WOO!")              
+                .css("background","rgb(156, 255, 163)")
+                .css("border-color", "lime")
+                .slideDown();
+        }
+        
+        //display loser message
+        function displayLoss(result) {
+            result
+                .text("Nope. Try again?")                   
+                .css("background","rgb(255, 168, 225)")
+                .css("border-color", "rgb(252, 86, 177)")
+                .slideDown();
+            
+        }
+
+        //check dragon form
+        $("#dragon-form").on("submit", function(event) {
+            event.preventDefault();
+            var answer = $(this).find("[type='text']").val();
+            answer = answer.toUpperCase();
+            if (answer === "DRAGON CURVE") {
+                displayWin($("#dragon-result"));
+            } else {
+                displayLoss($("#dragon-result"));
+            }
+        });
+        
+        //check koch snowflake form
+        $("#koch-form").on("submit", function(event) {
+            event.preventDefault();
+            var answer = $(this).find("[type='text']").val();
+            answer = answer.toUpperCase();
+            if (answer === "KOCH SNOWFLAKE") {
+                displayWin($("#koch-result"));
+            } else {
+                displayLoss($("#koch-result"));
+            }
+        });
+        
+        //check mandelbrot form
+        $("#mandelbrot-form").on("submit", function(event) {
+            event.preventDefault();
+            var answer = $(this).find("[type='text']").val();
+            answer = answer.toUpperCase();
+            if (answer === "MANDELBROT") {
+                displayWin($("#mandelbrot-result"));
+            } else {
+                displayLoss($("#mandelbrot-result"));
+            }
+        });
+        
+        
+    </script>
+    </body>
+</html>

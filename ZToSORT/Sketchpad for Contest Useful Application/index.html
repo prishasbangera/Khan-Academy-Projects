@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html> 
+    <!-- I have been programming for fifteen months and have
+learned 100% of Khan Academy's 'Intro to HTML/CSS'.
+    I would prefer to be placed in the Beginner bracket. -->
+    <!--Simple scratchpad for math, quick doodles, etc.-->
+    <!--p5.js source and how to incorporate it: https://www.khanacademy.org/computer-programming/i/5242894230044672-->
+    <!--Learning source: w3schools. Here I learned about sliders, modals, more CSS properties, and more.-->
+    <!--I leared how to disable text selection from
+        Stack Overflow-->
+    <!--
+        If you wish to save your sketch, click the Save(PJS)
+        button. The code should be automatically copied to your
+        clipboard, so paste into a new PJS program.
+        You can also right-click and select "Save As."
+        If you wish to edit your sketch after saving, go to line
+        851 (in setup). There, paste in ONLY the strokes array
+        of your save code.
+    -->
+    <!--Thank you Neon Byte for the feedback 
+        and showing how to do a zoom-in animation 
+        for the modal!-->
+    <head>
+        <title>Sketchpad</title> 
+        <!--p5.js source-->
+        <script src="https://cdn.jsdelivr.net/gh/NovaSagittarii/misc@1.0.2/p5.min.js"></script>
+        <!--Google Fonts-->
+        <link href="https://fonts.googleapis.com/css2?family=Norican&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                /*Variable for title background clr*/
+                --main-font-clr: rgb(224, 224, 224);
+                --title-bg-color: rgb(28, 27, 38);
+                /*Other*/
+                overflow: hidden;
+                cursor: crosshair;
+                /*Main font*/
+                font-family: Lato, sans-serif;
+            }
+            body {
+                /*At start*/
+                background-color: var(--title-bg-color);
+                color: var(--main-font-clr);
+            }
+            /*All buttons and inputs - cursor is pointer*/
+            button, input{
+                cursor: pointer;
+            }
+            /*All sliders*/
+            input[type=range] {
+                /*Remove default appearance*/
+                -webkit-appearance: none;   
+                appearance: none;
+                /*No margin, padding, or borders*/
+                margin: 0px;
+                padding: 0px;
+                outline: none;
+                /*Style the slider*/
+                border-radius: 15px;
+                width: 131px;
+                height: 5px;
+                background-color: rgb(48, 48, 48, 10);
+                color: inherit;
+                opacity: 70%;
+                /*For transitioning (hover)*/
+                -webkit-transition: 0.3s;
+                transition: 0.3s;
+            }
+            input[type=range]:hover {
+                /*When mouse over slider, 
+                transition to 100% opacity*/
+                opacity: 100%;
+            } 
+            /*Style the knob of sliders*/
+            input[type=range]::-webkit-slider-thumb {
+                /*Remove default appearance*/
+                -webkit-appearance: none; 
+                appearance: none;
+                /*Size, border radius, color*/
+                width: 13px;
+                height: 13px;
+                border-radius: 10px;
+                background-color: white;
+            }
+            input[type=range]::-moz-range-thumb {
+                /*Size, border radius, color*/
+                width: 10px;
+                height: 10px;
+                border-radius: 10px;
+                background-color: white;
+            }
+            /*LINKS - there's only one, but that's okay*/
+            a {
+                color: rgb(56, 172, 255);
+                text-decoration: none;
+            }
+            a:active {
+                color: rgb(0, 77, 255);
+            }
+            a:hover {
+                color: rgb(110, 212, 255);  
+            }
+            /*DISABLE ABILITY TO SELECT TEXT*/
+            .noselect {
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /*Old versions Firefox */
+                -ms-user-select: none; /*Internet Explorer/Edge */
+                /* Non-prefixed version*/
+                user-select: none; 
+            }
+            /*START SCENE*/
+            #start-scene {
+                /*Start scene div*/
+                margin: 0px;
+                padding: 0px;
+            }
+            #title {
+                /*Sketchpad title*/
+                /*Positioning*/
+                position: absolute;                
+                top: 24%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                /*Text*/
+                font-size: 90px;
+                font-family: Norican, cursive;
+                color: inherit
+            }
+            .transition-div {
+                /*For transition at start*/
+                /*Positioning - at button*/
+                position: absolute;
+                top: 63%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                /*Color*/
+                background-color: var(--main-font-clr);
+            }
+            #start-button {
+                /*Start Button*/
+                /*Positioning*/
+                position: absolute;
+                top: 63%;
+                left: 50%;
+                /*Helps position by center*/
+                transform: translate(-50%, -50%);
+                /*Padding, Border, Outline*/
+                padding: 7px;
+                padding-left: 12%;
+                padding-right: 12%;
+                border: white 3px solid;
+                outline: none;
+                /*Colors and text*/
+                background-color: var(--title-bg-color);
+                font-size: 22px;
+                font-family: inherit;
+                color: var(--main-font-clr);
+                /*For transitions - hover and active*/
+                -webkit-transition: 1s;
+                transition: 1s;
+            }
+            #start-button:hover {
+                /*Button clr from bg clr to white*/
+                background: white;
+                color: var(--title-bg-color);
+            }
+            #start-button:active {
+                /*When button active, no border*/
+                border: none;
+            }
+            /*MAIN*/
+            #main {
+                /*Not displayed at first*/
+                display: none; 
+            }
+            #sidebar {
+                /*Sidebar Positioning*/
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                /*Margins and size*/
+                margin: 0px;
+                width: 25%;
+                height: 100%;
+            }
+            /*Buttons*/
+            .sidebar-button {
+                /*Btns on the sidebar (also the modal
+                close btn)*/
+                /*Padding, border, outline*/
+                padding: 2px;
+                padding-left: 5px;
+                padding-right: 5px;
+                outline: none;
+                border: none;
+                border-radius: 10px;
+                /*A border at the bottom*/
+                border-bottom: 4px rgb(54, 54, 54) solid;
+                /*Clrs and text*/
+                background-color: rgb(74, 74, 74);
+                font-family: inherit;
+                font-size: 12px;
+                color: inherit;
+            }
+            .sidebar-button:hover {
+                /*On hover, change bg clr*/
+                background-color: rgb(94, 94, 94, 50);
+            }
+            .sidebar-button:active {
+                /*When active, remove border, shift down*/
+                border: none;
+                transform: translate(0%, 10%);
+            }
+            /*Specific buttons*/
+            #undo-button {
+                margin: 3px;
+            }
+            #clear-button {
+                position: absolute;
+                bottom: 5px;
+                left: 5px;
+            }
+            #save-button {
+                position: absolute;
+                bottom: 5px;
+                left: 50px;
+            }
+            .slider-labels {
+                /*The text labels on the sliders*/
+                margin-top: 10px;
+                margin-bottom: 3px;
+                font-size: 12px;
+                color: inherit;
+            }
+            #slider-container {
+                /*Position div that holds sliders and labels*/
+                position: absolute;
+                top: 32%;
+                left: 5%;
+            }
+            /*CANVAS*/
+            #canvas-parent {
+                /*Canvas includes sidebar*/
+                /*Positioning*/
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                /*Full height, no margin or padding*/
+                height: 100%;
+                margin: none;
+                padding: none;
+            }
+            /*MODAL*/
+            .modal {
+                /*Hidden at first*/
+                transform: scale(0);
+                opacity: 0%;
+                /*For zooming in and out*/
+                -webkit-transition: all 0.5s;
+                transition: all 0.5s;
+                /*Pos and size*/
+                position: absolute;
+                top: 18%;
+                right: 15%;
+                width: 50%;
+                height: 60%;
+                /*Padding, border, clrs*/
+                padding: 12px;
+                border-radius: 18px;
+                background-color: rgb(37, 36, 46);
+                /*Always on top*/
+                z-index: 1;
+            }
+            /*When modal visible, add this class - zoom in*/
+            /*When class removed, remove class to zoom out*/
+            .modal.show {
+                transform: scale(1);
+                opacity: 100%;
+            }
+            .modal p {
+                /*Set text clr of p elements in modal*/
+                color: inherit;
+            }
+            .modal textarea {
+                /*The save textarea*/
+                overflow: auto;
+                outline: none;
+                /*Remove resize arrow*/
+                resize: none;
+                /*Size*/
+                width: 97%;
+                height: 50%;
+            }
+            #close-modal-button {
+                /*Will also have sidebar-button class*/
+                /*Positioning*/
+                position: absolute;
+                right: 4%;
+            }
+        </style>
+    </head>
+    <body>
+        <!--Start Scene-->
+        <div id="start-scene">
+            <!--Title-->
+            <h1 id="title" class="start-scene-txt noselect">
+                Sketchpad</h1>
+            <!--Start button. On click, start sketchpad-->
+            <button id="start-button" onclick="startSketchpad()">Start</button>
+        </div>
+        <!--Main-->
+        <div id="main">
+            <!--Canvas-->
+            <div id="canvas-parent"> </div>
+            <!--Sidebar-->
+            <div id="sidebar">
+                <!--BUTTONS-->
+                <!--Undo for undo stroke-->
+                <button id="undo-button" 
+                        class="sidebar-button noselect" 
+                        onclick="brush.undo()">Undo</button>
+                <!--Clear for clear canvas-->
+                <button id="clear-button" 
+                        class="sidebar-button noselect" 
+                        onclick="brush.clear()">Clear</button>
+                <!--Save for saving drawing-->
+                <button id="save-button" 
+                        class="sidebar-button noselect" 
+                        onclick="saveImg()">Save (PJS)</button>
+                <!--Container holding sliders and labels-->
+                <div id="slider-container">
+                    <!--Size slider - brush size-->
+                    <p class="slider-labels noselect" 
+                       id="size-label">Size: 10</p>
+                    <input type="range" min="1" 
+                        max="80" value="10" 
+                        class="slider" id="size-slider">
+                    <!--Opacity slider- brush alpha-->
+                    <p class="slider-labels noselect" 
+                       id="alpha-label">Opacity: 100%</p>
+                    <input type="range" min="0" 
+                        max="255" value="255" 
+                        class="slider" id="alpha-slider">
+                </div>
+            </div>
+        </div>
+        <!--Save Sketch Modal-->
+        <div id="save-modal" class="modal">
+            <!--Button to close the modal-->
+            <button id="close-modal-button" class="sidebar-button" onclick="closeSaveModal();">&#9747</button>
+            <!--Message-->
+            <p>Sketch was successfully copied to clipboard. Paste into a <a target="_blank" href="https://www.khanacademy.org/computer-programming/new/pjs">new PJS program</a>. To edit sketch after save, paste ONLY the strokes array into line 851.</p>
+            <!--The place where save text is displayed-->
+            <textarea id="save-text"></textarea>
+        </div>
+        <!--JS for Elements, Transitioning, Modal, Etc-->
+        <script>
+            /*Is save modal open?*/
+            var modalIsOpen = false;
+            /*a simple function to get elements by ID*/
+            function getElById(str) {
+                return document.getElementById(str);
+            }
+            /* all the elements that will be used*/
+            var els = {
+                /*Start scene*/
+                strtScene: getElById("start-scene"),
+                /*Main*/
+                main: getElById("main"),
+                sliders:document.getElementsByClassName("slider"),
+                sizeSlider: getElById("size-slider"),
+                sizeLabel: getElById("size-label"),
+                alphaSlider: getElById("alpha-slider"),
+                alphaLabel: getElById("alpha-label"),
+                /*Modal*/
+                saveModal: getElById("save-modal"),
+                closeModalBtn: getElById("close-modal-button"),
+                saveTextarea: getElById("save-text"),
+            };
+            /*Switch scene from start to main*/
+            /*Called when start btn pressed*/
+            function startSketchpad() {
+                /*Width and height of transition div*/
+                /*Will grow to fill screen, then fade*/
+                var w = 0;
+                var h = 0;
+                /*Create the div*/
+                var trDiv = document.createElement("div");
+                /*Style - size and opacity*/
+                trDiv.style.width = "0px";
+                trDiv.style.height = "48px";
+                trDiv.style.opacity = "1";
+                /*Add transition-div class, then add to body*/
+                trDiv.classList.add("transition-div");
+                document.body.appendChild(trDiv);
+                /*The function to transition*/
+                /*Used for setInterval*/
+                function transition() {
+                    /*If width is less than 950px*/
+                    if (w < 950) {
+                        /*Add to width*/
+                        /*Convert to number, then add*/
+                        w = parseFloat(trDiv.style.width) + 60;
+                        /*Add "px", set width*/
+                        trDiv.style.width = w + "px";
+                    } else if (h <= 1200) {
+                        /*After width reaches 950, add to height*/
+                        h = parseFloat(trDiv.style.height) + 30; 
+                        trDiv.style.height = h + "px";
+                        /*When height reaches certain point*/
+                        if (h > 1150) {
+                            /*Change scene - hide start*/
+                            els.strtScene.style.display = "none";
+                            /*Display main*/
+                            els.main.style.display = "block";
+                        }
+                    } else if (trDiv.style.opacity > 0) {
+                        /*After div fills screen*/
+                        /*Reduce opacity*/
+                        trDiv.style.opacity -= 0.02;
+                    } else {
+                        /*After div is fully transparent*/
+                        /*Remove from body*/
+                        document.body.removeChild(trDiv);
+                        /*Stop running the setInterval function*/
+                        window.clearInterval(time);
+                    }
+                }
+                /*Set interval - call transition() until done*/
+                var time = window.setInterval(transition, 30);
+            }
+            /*Called when close btn on modal pressed*/
+            function closeSaveModal() {
+                /*Hide the modal*/
+                modalIsOpen = false;
+                els.saveModal.classList.remove("show");
+            }
+        </script>
+        <!--Code concerning p5 canvas-->
+        <script type="application/javascript">
+            /*Is the user dragging the slider?*/
+            /*This makes sure multiple things cannot be 
+              dragged at once & brush doesn't draw when user 
+              is dragging a slider*/
+            var isDraggingSlider = false;
+            var sidebarW = 150; /*Sidebar width*/
+            /*for createGraphics - changes as user draws*/
+            var sketchImg; 
+            /*Everything the user drew*/
+            /*Used for undo and save code*/
+            var strokes = [];
+            var newStroke;
+            /*Functions, etc. for the brush*/
+            var brush = {
+                /*Is the user drawing?*/
+                drawing: false,
+                /*Used to display current brush settings*/
+                displaySettings: function() {
+                    /*Save current coordinate system*/
+                    push();
+                    /*Translate to pos*/
+                    translate(sidebarW/2, height*0.74);
+                    /*Set clr and size to settings*/
+                    stroke(this.clr);
+                    strokeWeight(this.siz);
+                    /*Draw a point with those settings*/
+                    point(0, 0);
+                    /*Draw a box around the point*/
+                    noFill();
+                    strokeWeight(1);
+                    stroke(255, 50);
+                    /*Position rect by center*/
+                    rectMode(CENTER);
+                    rect(0, 0, 100, 100);
+                    /*Back to default*/
+                    rectMode(CORNER);
+                    /*Back to previous system*/
+                    pop();
+                },
+                run: function() {
+                    /*If the user is not dragging a slider
+                      and drawing wasn't true before & the 
+                      mouse is not over the sidebar
+                      AND save modal isn't open*/
+                    if (!isDraggingSlider && !this.drawing && 
+                        mouseX > sidebarW && mouseX < width &&
+                        mouseY > 0 && mouseY < height &&
+                        !modalIsOpen) {
+                        /*Set drawing to true*/
+                        this.drawing = true;
+                        /*Create a new stroke with clr, size, and
+                          points of the stroke*/
+                        /*Add initial mouse coordinates as well*/
+                        newStroke = {
+                            /*If we don't set the clr like
+                              this, a weird bug would happen
+                              with alpha and undo*/
+                            clr: [red(this.clr), 
+                                  green(this.clr), 
+                                  blue(this.clr), 
+                                  alpha(this.clr)],
+                            siz: this.siz,
+                            pts: [[pmouseX-sidebarW, pmouseY]],
+                        };
+                        /*Set stroke and stroke weight of 
+                            sketchImg - createGraphics*/
+                        sketchImg.stroke(this.clr);
+                        sketchImg.strokeWeight(this.siz);
+                    }
+                    /*If the user is drawing*/
+                    if (this.drawing) {
+                        /*Push mouse coordinates onto the pts 
+                          array. Subtract sidebarW from mouseX--
+                          the area where you draw is shifted to
+                          the right by sidebarW*/
+                        /*Remember that everything is being
+                          drawn on the sketchImg*/
+                        newStroke.pts.push([mouseX-sidebarW,
+                                            mouseY]);
+                        /*Draw line from pmouse pos to mouse pos*/
+                        sketchImg.line(pmouseX-sidebarW, pmouseY,
+                                       mouseX-sidebarW, mouseY);
+                        /*Now draw the image*/
+                        image(sketchImg, sidebarW, 0);
+                    }
+                },
+                handleRelease: function() {
+                    /*When mouse released*/
+                    if (this.drawing) {
+                        /*Set drawing to false*/
+                        this.drawing = false;
+                        /*Push new stroke to strokes array*/
+                        strokes.push(newStroke);
+                        newStroke = null;
+                    }
+                },
+                undo: function() {
+                    /*When undo button pressed*/
+                    /*White background*/
+                    sketchImg.background(255);
+                    /*If there are strokes, remove last stroke*/
+                    if (strokes.length > 0) {
+                        strokes.splice(-1, 1);
+                    }
+                    /*Draw the image and the sidebar again*/
+                    /*These functions are defined later*/
+                    drawImg();
+                },
+                clear: function() {
+                    /*When clear btn pressed, empty array*/
+                    strokes = [];
+                    /*White background, draw image again*/
+                    sketchImg.background(255);
+                    image(sketchImg, sidebarW, 0);
+                    /*Draw sidebar*/
+                    drawSidebar();
+                },
+                setClr: function(clr) {
+                    /*Set the clr of the brush to clr*/
+                    this.clr = clr;
+                    /*Set the alpha of the clr to whatever
+                      value the alpha slider is on*/
+                    this.clr[3] = 
+                        parseFloat(els.alphaSlider.value);
+                }
+            };
+            /*Color Wheel*/
+            var clrWheel = {
+                /*Size, pos of wheel and picker*/
+                radius: 40,
+                wheelX: 51,
+                wheelY: 76,
+                pickerX: 86,
+                /*Is user dragging mouse on clr wheel?*/
+                dragging: false,
+                handleRelease: function() {
+                    /*When mouse released*/
+                    if (this.dragging) {
+                        /*Set dragging to false if true*/
+                        this.dragging = false;
+                    }
+                },
+                draw: function() {
+                    /*Briefly set image mode to center*/
+                    imageMode(CENTER);
+                    /*Draw the color wheel*/
+                    /*Image is created in setup*/
+                    image(this.img, this.wheelX, this.wheelY);
+                    /*Back to default*/
+                    imageMode(CORNER);
+                    /*Draw and update the color picker*/
+                    noFill();
+                    strokeWeight(2);
+                    stroke(255);
+                    /*If mouse is over wheel, user isn't 
+                      already dragging a slider or drawing*/
+                    if (dist(mouseX, mouseY, 
+                        this.wheelX, this.wheelY) < 
+                        this.radius && !isDraggingSlider
+                        && !brush.drawing) {
+                        /*Set isDraggingSlider and 
+                          dragging to true*/
+                        isDraggingSlider = true;
+                        this.dragging = true;
+                    }
+                    /*If dragging and mouse is still over 
+                      the color wheel*/
+                    if (this.dragging && dist(mouseX, mouseY, 
+                        this.wheelX, this.wheelY) < 
+                        this.radius) {
+                            /*Set color picker pos to mouse pos*/
+                            this.pickerX = mouseX;
+                            this.pickerY = mouseY;
+                            /*Get the color at color picker pos*/
+                            /*Set clrWheel clr, used for bright
+                              selector*/
+                            this.clr = get(this.pickerX, 
+                                           this.pickerY);
+                            /*Set brush clr since hue changed*/
+                            brush.setClr(get(brightSelect.pickerX,
+                                        brightSelect.pickerY));
+                    }
+                    /*Draw the color picker*/
+                    ellipse(this.pickerX, this.pickerY, 10, 10);
+                },
+            };
+            /*Bright Selector*/
+            var brightSelect = {
+                /*Position and size*/
+                x: 109,
+                y: clrWheel.wheelY-clrWheel.radius,
+                w: 20,
+                h: clrWheel.radius*2,
+                /*Is the user dragging the selector?*/
+                dragging: false,
+                handleRelease: function() {
+                    /*On mouse release*/
+                    if (this.dragging) {
+                        /*Set dragging to false*/
+                        this.dragging = false;
+                    }
+                },
+                draw: function() {
+                    /*Draw a rect with clr clrWheel
+                      is currently on*/
+                    noStroke();
+                    fill(clrWheel.clr, 255);
+                    rect(this.x, this.y, this.w, this.h)
+                    /*Draw img - gradient (created in setup)*/
+                    image(this.img, this.x, this.y);
+                    /*If mouse within selector and user
+                      wasn't dragging or drawing anything 
+                      before*/
+                    if (mouseX > this.x && 
+                        mouseX < this.x+this.w &&
+                        mouseY > this.y &&
+                        mouseY < this.y + this.h &&
+                        !brush.drawing) {
+                            /*Set dragging to true*/
+                            isDraggingSlider = true;
+                            this.dragging = true;
+                        }
+                    /*If mouse still within selector and
+                      dragging is true*/
+                    if (this.dragging &&
+                        mouseY > this.y &&
+                        mouseY < this.y + this.h) {
+                            /*Set y to mouseY*/
+                            this.pickerY = mouseY;
+                            /*Set color of brush since
+                              brightness changed*/
+                            brush.setClr(get(this.pickerX, 
+                                             this.pickerY));
+                    }
+                    /*Draw the picker*/
+                    noFill();
+                    stroke(255);
+                    strokeWeight(1);
+                    rectMode(CENTER); /*Position rect by center*/
+                    rect(this.pickerX, this.pickerY, this.w, 4);
+                    rectMode(CORNER); /*Position rect-default*/
+                },
+            };
+            /*Draw the sidebar*/
+            function drawSidebar() {
+                /*Draw the background rect of sidebar*/
+                noStroke();
+                fill(31, 30, 38);
+                rect(0, 0, sidebarW, height);
+                /*Display everything*/
+                brush.displaySettings();
+                brightSelect.draw();
+                clrWheel.draw();
+            }
+            /*Draw the image*/
+            function drawImg() {
+                /*Loop through strokes*/
+                for (var i = 0; i < strokes.length; i++) {
+                    var s = strokes[i];
+                    /*Set size and color according to curr
+                      stroke - each stroke is an object with
+                      clr, siz, and pts*/
+                    sketchImg.strokeWeight(s.siz);
+                    sketchImg.stroke(s.clr);
+                    /*Loop through points array on curr stroke*/
+                    for (var j = 1; j < s.pts.length; j++) {
+                        /*Draw a line from previous pt 
+                          to this pt. Each point: [x, y]*/
+                        sketchImg.line(s.pts[j-1][0], 
+                                        s.pts[j-1][1],
+                                        s.pts[j][0], 
+                                        s.pts[j][1]);
+                    }
+                }
+                /*Draw the image*/
+                image(sketchImg, sidebarW, 0);
+            }
+            /*everything to save img - when 
+              user clicks save btn*/
+            function saveImg() {
+                /*So that user cannot draw when modal open*/
+                modalIsOpen = true;
+                /*Build up the save string*/
+                /*img will be created with createGraphics*/
+                var txt = "//Generated using Sketchpad https://www.khanacademy.org/computer-programming/sketchpad-contest-useful-application-webpage-submissions/5006241551302656"
+                /*Start the strokes array*/
+                txt+="\nvar strokes = [";
+                /*Loop through all the strokes*/
+                for (var i = 0; i < strokes.length; i++){
+                    var s = strokes[i];
+                    /*Start the stroke object with {*/
+                    txt+="{";
+                    /*Add in the clr and size to object*/
+                    txt+="clr:color(" + s.clr + "),";
+                    txt+="siz:"+s.siz+",";
+                    /*Start the pts array in the stroke object*/
+                    txt+="pts:[";
+                    /*Loop through the points*/
+                    for (var j = 0; j < s.pts.length; j++) {
+                        /*Add in the pt array to the string*/
+                        txt+="["+s.pts[j]+"],";
+                    }
+                    /*Close the pts array and 
+                      stroke object w/ ]}*/
+                    txt+="]},"
+                }
+                /*Add in some code to act on the strokes array*/
+                /*With comments, so people can learn*/
+                /*It may be better that the code is 
+                  obfuscated, though*/
+                txt+="];\nvar sketchImg = (function(){/*Image will be created with createGraphics*/var img = createGraphics(400, 400, P2D);img.background(255);/*Loop through all stroke objects*/for (var i = 0; i < strokes.length; i++) {/*Set clr and siz according to curr stroke*/var s = strokes[i];img.stroke(s.clr);img.strokeWeight(s.siz);/*Loop through pts array*/for (var j = 1; j < s.pts.length; j++) {/*Draw a line from previous pt to curr point*/img.line(s.pts[j-1][0], s.pts[j-1][1], s.pts[j][0], s.pts[j][1]);}}/*Return the image*/return img.get();})();\n\n/*Draw the image*/image(sketchImg, 0, 0, width, height);"
+                /*The modal is now there*/
+                els.saveModal.classList.add("show");
+                /*Put the string built up into the textarea*/
+                els.saveTextarea.value = txt;
+                /*Select and copy the text in the textarea*/
+                els.saveTextarea.select();
+                document.execCommand("copy");
+            };
+            
+            /*SETUP*/
+            function setup() {
+                /*Create canvas*/
+                canvas = createCanvas(550, 400);
+                canvas.parent("canvas-parent");
+                /*Create the image - will display all
+                  the user's strokes*/
+                sketchImg = createGraphics(width-sidebarW, 
+                                           height);
+                sketchImg.noFill();
+                sketchImg.background(255);
+                /*Set angle mode*/
+                angleMode("degrees");
+                /*Set some other properties of the 
+                  pickers in relation to already 
+                  defined properties*/
+                brightSelect.pickerY = brightSelect.y+2;
+                brightSelect.pickerX = brightSelect.x-1 +
+                                       brightSelect.w/2;
+                clrWheel.pickerY = clrWheel.wheelY;
+                /*Create the color wheel image*/
+                clrWheel.img = (function() {
+                    var siz = clrWheel.radius*2;
+                    /*Change color mode 
+                      hue sat brightness*/
+                    colorMode(HSB, 100); 
+                    strokeWeight(2);
+                    /*Save curr coordinate system*/
+                    push();
+                    /*Translate to center*/
+                    translate(siz/2, siz/2);
+                    scale(2); /*Make twice as big*/
+                    /*Rotate from 0 to 360 degrees*/
+                    for (var r = 0; r < 360; r+=3) {
+                        /*Save current coordinate system*/
+                        push();
+                        /*Map rotation to get hue*/
+                        var h = map(r, 0, 360, 0, 100);
+                        rotate(r); /*rotate by r*/
+                        /*From saturation 0 to 100, 
+                          up by 5 each time*/
+                        for (var s = 0; s < 100; s+=5) {
+                            /*Set color of point*/
+                            stroke(h, s, 100);
+                            /*draw the point, dist is s/5
+                              since sat interval step is 5*/
+                            point(s/5, 0);
+                        }
+                        /*Undo transformations that 
+                          occured in this iteration*/
+                        pop();
+                    }
+                    pop(); /*Undo all transformations*/
+                    /*Back to default*/
+                    colorMode(RGB, 255);
+                    /*Capture image and return*/
+                    return get(0, 0, siz, siz);
+                })();
+                /*Create the bright selector image - 
+                  gradient*/
+                brightSelect.img = (function() {
+                    /*Get the w and h of the image*/
+                    var w = brightSelect.w;
+                    var h = brightSelect.h;
+                    /*Clear the canvas, since
+                      colorWheel was also drawn*/
+                    clear();
+                    strokeWeight(3);
+                    /*Save current coordinate system*/
+                    push();
+                    /*From y = 0 to brightSelector height*/
+                    for (var y = 0; y < h; y+=3) {
+                        /*map y to find alpha of stroke*/
+                        stroke(0, map(y, 0, h, 0, 255));
+                        /*draw a line across*/
+                        line(0, y, w, y);
+                    }
+                    /*Undo all transformations*/
+                    pop();
+                    /*Capture and return the image*/
+                    return get(0, 0, w, h);
+                }());
+                /*A white background*/
+                background(255);
+                /****************************************
+                Paste in ONLY the strokes array of the 
+                save code here, if you wish to edit.
+                *****************************************/
+                strokes = [];
+                /**********************************/
+                /*Draw the image - need if user pastes 
+                  in strokes from previous session*/
+                drawImg();
+                /*Draw the clrWheel so brushClr can be picked*/
+                clrWheel.draw();
+                //default settings
+                /*Set brush size to slider value*/
+                brush.siz = parseFloat(els.sizeSlider.value);
+                /*Set brush clr as clr the clr picker is on*/
+                clrWheel.clr = get(clrWheel.pickerX, 
+                                   clrWheel.pickerY);
+                /*If we don't set it like this, a weird
+                  bug will happen with alpha*/
+                brush.clr = [red(clrWheel.clr), 
+                             green(clrWheel.clr), 
+                             blue(clrWheel.clr)];
+                /*Finally, draw sidebar, brightness selector,
+                  color wheel, and brush settings preview*/
+                drawSidebar();
+            }
+            
+            /*HTML Sliders and updating values*/
+            els.sizeSlider.oninput = function() {
+                /*On input, change brush siz to size slider
+                  value, changed to float*/
+                brush.siz = parseFloat(this.value);
+                /*Change the label on slider*/
+                els.sizeLabel.innerHTML = "Size: " + brush.siz;
+            }
+            els.alphaSlider.oninput = function() {
+                /*Set alpha of brush clr to slider value,
+                  changed to value*/
+                brush.clr[3] = parseFloat(this.value);
+                /*Round value, map from 0 to 100 for percent*/
+                var p = round(map(brush.clr[3], 0, 255, 0, 100));
+                /*Change label on slider*/
+                els.alphaLabel.innerHTML = "Opacity: " + p + "%";
+            }
+            /*Loop through sliders*/
+            for (var i = 0; i < els.sliders.length; i++) {
+                /*When slider is being dragged, set
+                  isDraggingSlider to true*/
+                els.sliders[i].onmousedown = function() {
+                    isDraggingSlider = true;
+                }
+            }
+            
+            /*Mouse Interact Functions*/
+            function mouseDragged() {
+                /*Run the brush stuff, draw the sidebar*/
+                brush.run();
+                drawSidebar();
+            }
+            function mouseReleased() {
+                /*If user was dragging any slider, set to false*/
+                if (isDraggingSlider) {
+                    isDraggingSlider = false;
+                }    
+                /*Handle release for everything else*/
+                brush.handleRelease();
+                clrWheel.handleRelease();
+                brightSelect.handleRelease();
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<!-- Sources: https://webgl2fundamentals.org/webgl/lessons/webgl-fundamentals.html -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width">
+		<title>Test webgl2</title>
+		<style>
+			body {
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#sliders-container {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				color: white;
+			}
+
+			#canvas {
+				width: 100vw;
+				height: 100vh;
+			}
+		</style>
+		<script id="vs" type="x-shader/x-vertex">#version 300 es
+            in vec2 a_position;
+            in vec4 a_color;
+
+            uniform vec2 u_offset;
+            uniform float u_scalar;
+
+            out vec4 v_color;
+
+            void main() {
+                gl_Position = vec4((a_position * u_scalar) + u_offset, 0, 1);
+                v_color = a_color + vec4(u_offset, 0, 1);
+            }
+  		</script>
+		<script id="fs" type="x-shader/x-fragment">#version 300 es
+            precision highp float;
+
+            in vec4 v_color;
+
+            out vec4 outColor;
+
+            void main() {
+                outColor = v_color;
+            }
+		</script>
+		<script type="">
+		    // for debugging
+            function println() {
+            	for (let i = 0; i < arguments.length; i++) {
+            		console.log(arguments[i]);
+            		// const p = document.createElement("p");
+            		// p.textContent = arguments[i];
+            		// document.body.appendChild(p);
+            	}
+            }
+            
+            // call just before rendering canvas
+            function resizeGlCanvas(gl) {
+            	const canvas = gl.canvas;
+            	// size of canvas in css pixels
+            	const w = canvas.clientWidth;
+            	const h = canvas.clientWidth;
+            	// set size if needed
+            	if (canvas.width !== w || canvas.height !== h) {
+            		canvas.width = w;
+            		canvas.height = h;
+            	}
+            	gl.viewport(0, 0, canvas.width, canvas.height);
+            }
+            
+            // get webgl2 context
+            function getWEBGL2(canvasId) {
+            	const gl = document.getElementById(canvasId).getContext("webgl2");
+            	if (gl) {
+            		// ensure correct canvas size
+            		resizeGlCanvas(gl);
+            		return gl;
+            	} else println("No WebGL2 for you! :(((")
+            }
+            
+            function createShader(gl, srcId) {
+            	// get source
+            	const scriptTag = document.getElementById(srcId);
+            	const source = scriptTag.text;
+            	console.log(source);
+            	if (!source) {
+            		println("Unknown script element.");
+            		return;
+            	}
+            	// get type of source
+            	let type;
+            	if (scriptTag.type === "x-shader/x-vertex") {
+            		type = gl.VERTEX_SHADER;
+            	} else if (scriptTag.type === "x-shader/x-fragment") {
+            		type = gl.FRAGMENT_SHADER;
+            	} else {
+            		println("Wrong type for script tag.");
+            	}
+            	// create shader, set source code, and compile
+            	const shader = gl.createShader(type);
+            	gl.shaderSource(shader, source);
+            	gl.compileShader(shader);
+            	// check if success
+            	if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            		return shader;
+            	} else {
+            		// log error and delete shader
+            		println(gl.getShaderInfoLog(shader));
+            		gl.deleteShader(shader);
+            	}
+            }
+            
+            // link two shaders into a program
+            function createProgram(gl, vsId, fsId) {
+            	const program = gl.createProgram();
+            	// create and attach shaders
+            	const vShader = createShader(gl, vsId);
+            	const fShader = createShader(gl, fsId);
+            	gl.attachShader(program, vShader);
+            	gl.attachShader(program, fShader);
+            	// link and validate
+            	gl.linkProgram(program);
+            	gl.validateProgram(program);
+            	// check
+            	if (gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            		return program;
+            	} else {
+            		// log error and delete program
+            		println(gl.getProgramInfoLog(program));
+            		gl.deleteProgram(program);
+            	}
+            }
+            
+            function attribute(gl, program, name, size, type, normalize, stride = 0, offset = 0) {
+            	const location = gl.getAttribLocation(program, name);
+            	gl.enableVertexAttribArray(location);
+            	gl.vertexAttribPointer(location, size, type, normalize, stride, offset);
+            	return location;
+            }
+            
+            function buffer(gl, target, data, usage) {
+            	const b = gl.createBuffer();
+            	gl.bindBuffer(target, b);
+            	gl.bufferData(target, data, usage);
+            
+            	return b;
+            }
+            
+            function programLog(gl, program) {
+            	const log = gl.getProgramInfoLog(program);
+            	if (log.length > 0) console.log(log);
+            }
+		</script>
+	</head>
+
+	<body>
+		<canvas id="canvas"></canvas>
+		<div id="sliders-container">
+			<label for="x">X:</label>
+			<input type="range" name="x" id="x-slider" value="0" min="-1" max="1" step="0.05">
+			<label for="y">Y:</label>
+			<input type="range" name="y" id="y-slider" value="0" min="-1" max="1" step="0.05">
+			<label for="size">Size:</label>
+			<input type="range" name="size" id="size-slider" value="1" min="0.1" max="2.5" step="0.01">
+		</div>
+		<script type="">
+        	window.addEventListener("load", function() {
+        	    
+        		// get context
+				const gl = getWEBGL2("canvas");
+    			const width = gl.canvas.width;
+    			const height = gl.canvas.height;
+				if (!gl) return;
+
+				// create program
+				const prog = createProgram(gl, "vs", "fs");
+
+				// uniform offset
+                const offsetUniformLocation = gl.getUniformLocation(prog, "u_offset");
+                // uniform scalar
+                const scalarUniformLocation = gl.getUniformLocation(prog, "u_scalar");
+
+                // position buffer
+                const positions = function() {
+                	const coord = x => Math.random() - 0.5;
+                    const output = [];
+                    const s = Math.PI * 0.1;
+                    // random triangles
+                    for (let r = 1; r > 0; r-=0.01) {
+                        const a = Math.random() * Math.PI * 2;
+                        output.push(
+                            0, 0,
+                            r * Math.cos(a),
+                            r * Math.sin(a),
+                            r * Math.cos(a + s),
+                            r * Math.sin(a + s)
+                        );
+                    }
+                    return output;
+                }();
+				const positionBuffer = buffer(gl, gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+                // position attribute
+                const posAttrLocation = attribute(gl, prog, "a_position", 2, gl.FLOAT, false);
+
+                // color buffer
+                const clrs = function() {
+                    let c = [];
+                    for (let i = 0; i < positions.length; i+=2) {
+                        const randomClr = [Math.random(), Math.random(), Math.random()];
+                        c = c.concat(randomClr);
+                    }
+                    return c;
+                }();
+                const clrBuffer = buffer(gl, gl.ARRAY_BUFFER, new Float32Array(clrs), gl.STATIC_DRAW);
+                const colorLocation = attribute(gl, prog, "a_color", 3, gl.FLOAT, false);
+
+                // Clear the canvas
+                gl.clearColor(0, 0, 0, 1);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+
+                // use program
+                gl.useProgram(prog);
+
+                // function to draw triangles
+                function drawTriangles(offset, scalar) {
+                    // Clear the canvas
+                    gl.clear(gl.COLOR_BUFFER_BIT);
+                    // pass in scalar
+                    gl.uniform1f(scalarUniformLocation, scalar);
+                    // pass in offset
+                    gl.uniform2fv(offsetUniformLocation, offset);
+                    gl.drawArrays(gl.TRIANGLES, 0, positions.length / 2);
+                    programLog(gl, prog);
+                }
+
+                drawTriangles([0, 0, 0, 0], 1);
+
+                const sliders = [
+                    document.getElementById("x-slider"),
+                    document.getElementById("y-slider"),
+                    document.getElementById("size-slider")
+                ];
+
+                // on input from sliders
+                for (let i = 0; i < sliders.length; i++) {
+                    sliders[i].addEventListener("input", function() {
+                        drawTriangles(
+                            // pass in offset
+                            [+sliders[0].value, +sliders[1].value],
+                            // pass in scalar
+                            +sliders[2].value
+                        );
+                    });
+                }
+
+                programLog(gl, prog);
+
+			});
+    	</script>
+	</body>
+
+</html>
