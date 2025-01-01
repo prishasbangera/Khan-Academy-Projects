@@ -5,7 +5,7 @@
 
 Please note that the code may not be the cleanest or the most efficient, as I was just learning and having fun. :)
 
-Most code will be in the form of Processing.js (deprecated) in a text file, but there are also index.html files (p5.js, WebGL2, HTML/CSS, etc) and one Python file.
+Most code will be in Processing.js (deprecated), but there are also index.html files (p5.js, WebGL2, HTML/CSS, etc) and one Python file.
 
 
  ## Folders
