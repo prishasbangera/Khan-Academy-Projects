@@ -1,6 +1,6 @@
 # [TITLE](Link)
 
-## Skills:
+## Skills: JS, art, gradients, shapes/color
 
 ## Date:
 

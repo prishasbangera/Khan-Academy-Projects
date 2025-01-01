@@ -13,5 +13,5 @@
 - https://www.khanacademy.org/computing/computer-programming/programming-natural-simulations/programming-particle-systems/a/intro-to-particle-systems
 
 ## Snapshots:
-- ![Snapshot 1](image1.png)
-- ![Snapshot 2](image2.png)
+![Snapshot 1](image1.png)
+![Snapshot 2](image2.png)
