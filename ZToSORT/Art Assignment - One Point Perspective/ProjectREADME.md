@@ -10,9 +10,9 @@
 - One point perspective - planet scene
 
 ## Sources:
-- (In p5 Web Editor) [Person Image Source]("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlMNn-nJIdZRLpR17Jcd5OjPLS7iVaKBYC2zKIYbKceA&s")
+- (In p5 Web Editor) [Person Image Source](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlMNn-nJIdZRLpR17Jcd5OjPLS7iVaKBYC2zKIYbKceA&s)
 
 ## Snapshot:
 - [Post](https://www.instagram.com/p/CM_ZyrtrWHF/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==)
-![alt text](image.png)
+- ![alt text](image.png)
 
