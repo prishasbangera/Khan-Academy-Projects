@@ -15,13 +15,16 @@ Most code will be in Processing.js (deprecated), but there are also index.html f
  - ### Tutorial Projects
  - Projects from following tutorials or when I was just starting out, especially the ones where I was experimenting and adding to the code.
 
- - ### Programming Art Projects
- - Smaller creative coding/art projects, including some inspired from my calculus classes.
+ - ### Small Programming Art Projects
+ - Smaller creative coding/art projects.
 
- - ### Larger Projects
- - Larger art and non-art projects, including some contests.
+ - ### Larger Programming Art Projects
+ - Larger creative coding/art projects that didn't make it to the Showcase.
+
+ - ### Non-Art Projects
+ - Some math/CS projects that aren't related to creative coding/art.
  
  - ### SHOWCASE
- - Art and coding projects that I am proud of. See images below.
+ - Art and coding projects that I am proud of.
  - Gallery:
 
