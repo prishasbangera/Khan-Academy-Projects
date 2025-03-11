@@ -8,7 +8,7 @@ Please note that the code may not be the cleanest or the most efficient, as I wa
 Most code will be in Processing.js (deprecated), but there are also index.html files (p5.js, WebGL2, HTML/CSS, etc) and one Python file.
 
 
- ## Folders
+ ## Folders - Still need to create/sort
   The folders listed below contain the copied code, but to run/view the projects, visit my KA profile. (Working on a GitHub Page!)
   Each project has code and (in the `ProjectREADME.md file`) name, link, description, and maybe an image and some notes/sources.
 
