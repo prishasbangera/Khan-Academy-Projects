@@ -12,17 +12,14 @@ Most code will be in Processing.js (deprecated), but there are also index.html f
   The folders listed below contain the copied code, but to run/view the projects, visit my KA profile. (Working on a GitHub Page!)
   Each project has code and (in the `ProjectREADME.md file`) name, link, description, and maybe an image and some notes/sources.
 
- - ### Tutorial Projects
+ - ### Beginner and Tutorial Projects
  - Projects from following tutorials or when I was just starting out, especially the ones where I was experimenting and adding to the code.
 
- - ### Small Programming Art Projects
- - Smaller creative coding/art projects.
+ - ### Smaller Projects
+ - Smaller creative coding/art or programming projects.
 
  - ### Larger Programming Art Projects
  - Larger creative coding/art projects that didn't make it to the Showcase.
-
- - ### Non-Art Projects
- - Some math/CS projects that aren't related to creative coding/art.
  
  - ### SHOWCASE
  - Art and coding projects that I am proud of.
