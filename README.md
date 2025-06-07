@@ -17,6 +17,7 @@ Most code will be in Processing.js (deprecated), but there are also index.html f
 
  - ### Smaller Projects
  - Smaller creative coding/art or programming projects.
+ - There is a subfolder, `0 Math and Coding Projects` with more math or computer science-related projects.
 
  - ### Larger Programming Art Projects
  - Larger creative coding/art projects that didn't make it to the Showcase.
