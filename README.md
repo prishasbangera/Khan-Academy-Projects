@@ -1,5 +1,5 @@
 # Khan Academy Projects
- My favorite Khan Academy projects, starting from March 2020. Includes projects in Processing.js as text files.
+ My favorite Khan Academy projects, starting from March 2020.
 
   [Khan Academy Profile](https://www.khanacademy.org/profile/kaid_861909786767545381407237/projects)
 
