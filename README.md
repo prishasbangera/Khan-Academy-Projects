@@ -15,14 +15,18 @@ Most code will be in Processing.js (deprecated), but there are also index.html f
  - ### Beginner and Tutorial Projects
  - Projects from following tutorials or when I was just starting out, especially the ones where I was experimenting and adding to the code.
 
+ - ## Math and Coding Projects
+ - These are less related to art and more related to mathematics concepts or coding visualizations.
+
  - ### Smaller Projects
  - Smaller creative coding/art or programming projects.
- - There is a subfolder, `0 Math and Coding Projects` with more math or computer science-related projects.
+ - A few are me playing with more advanced tutorials, sources provided.
 
  - ### Larger Programming Art Projects
  - Larger creative coding/art projects that didn't make it to the Showcase.
  
  - ### SHOWCASE
  - Art and coding projects that I am proud of.
+ - There is a subfolder of my raytracing/WEBGL/raymarching struggles. In the future, I will make a repo with my Shadertoy raymarching projects.
  - Gallery:
 
