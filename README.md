@@ -3,7 +3,9 @@
 
  !! IMPORTANT !! Descriptions are still under construction, and I may create a personal website later.
 
-  [Khan Academy Profile](https://www.khanacademy.org/profile/kaid_861909786767545381407237/projects)
+  [Khan Academy Profile](https://www.khanacademy.org/profile/kaid_861909786767545381407237/projects) <br>
+  
+  Check out my [Instagram](https://www.instagram.com/prishainabox/) @prishainabox, where I have posted these and some animated versions of these projects over the years.
 
 Please note that the code may not be the cleanest or the most efficient, as I was just learning and having fun. :)
 
