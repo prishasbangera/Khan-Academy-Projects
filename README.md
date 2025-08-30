@@ -14,20 +14,20 @@ Most code will be in Processing.js (deprecated), but there are also index.html f
   The folders listed below contain the copied code, but to run/view the projects, visit my KA profile. (Working on a GitHub Page!)
   Each project has code and (in the `ProjectREADME.md file`) name, link, description, and maybe an image and some notes/sources.
 
- - ### Beginner and Tutorial Projects
+### Beginner and Tutorial Projects
  - Projects from following tutorials or when I was just starting out, especially the ones where I was experimenting and adding to the code.
 
- - ## Math and Coding Projects
+### Math and Coding Projects
  - These are less related to art and more related to mathematics concepts or coding visualizations.
 
- - ### Smaller Projects
+### Smaller Projects
  - Smaller creative coding/art or programming projects.
  - A few are me playing with more advanced tutorials, sources provided.
 
- - ### Larger Programming Art Projects
+### Larger Programming Art Projects
  - Larger creative coding/art projects that didn't make it to the Showcase.
  
- - ### SHOWCASE
+### SHOWCASE
  - Art and coding projects that I am proud of.
  - There is a subfolder of my raytracing/WEBGL/raymarching struggles. In the future, I will make a repo with my Shadertoy raymarching projects.
  - Gallery:
