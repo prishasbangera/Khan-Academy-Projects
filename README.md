@@ -1,6 +1,8 @@
 # Khan Academy Projects
  My favorite Khan Academy projects, starting from March 2020.
 
+ !! IMPORTANT !! Descriptions are still under construction, and I may create a personal website later.
+
   [Khan Academy Profile](https://www.khanacademy.org/profile/kaid_861909786767545381407237/projects)
 
 Please note that the code may not be the cleanest or the most efficient, as I was just learning and having fun. :)

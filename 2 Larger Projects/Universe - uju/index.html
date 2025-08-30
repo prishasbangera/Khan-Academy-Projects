@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>uju</title>
+        <!--p5.js source-->
+        <script src="https://cdn.jsdelivr.net/gh/Steffan153/files/p5-ka.js"></script>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                background: black;
+            }
+        </style>
+    </head>
+    <body>
+    <script type="">
+        
+function drawBezierShape(controlPoints, mirrored = false) {
+    beginShape();
+    if (!mirrored) {
+        vertex(controlPoints[0].x, controlPoints[0].y);
+        for (let i = 1; i < controlPoints.length - 2; i += 3) {
+            bezierVertex(
+                controlPoints[i].x, controlPoints[i].y,
+                controlPoints[i + 1].x, controlPoints[i + 1].y,
+                controlPoints[i + 2].x, controlPoints[i + 2].y
+            );
+        }
+    } else {
+        vertex(width - controlPoints[0].x, controlPoints[0].y);
+        for (let i = 1; i < controlPoints.length - 2; i += 3) {
+            bezierVertex(
+                width - controlPoints[i].x, controlPoints[i].y,
+                width - controlPoints[i + 1].x, controlPoints[i + 1].y,
+                width - controlPoints[i + 2].x, controlPoints[i + 2].y
+            );
+        } 
+    }
+    endShape();
+    
+}
+
+///////////////////////////////////////////////
+
+var Loader = {
+    counter: 0,
+    isLoading: function () {
+        return this.counter < this.pieces.length;
+    },
+    update: function() {
+        // draw next piece
+        push();
+        this.pieces[this.counter++]();
+        pop();
+    },
+    pieces: []
+};
+
+// pieces /////////////////////////////////////
+
+// background outline
+Loader.pieces.push(function() {
+    background(0);
+});
+
+// background
+Loader.pieces.push(function() {
+    loadPixels();
+    noiseSeed(10);
+    randomSeed(10);
+    for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+            
+            let i = (x + y*width) << 2;
+            
+            let s = 100.10;
+            let xShifted = x - width/2;
+            let yShifted = y - height/2;
+            let dSquared = xShifted**2 + yShifted**2;
+            let n = noise(dSquared ** 2 * 9e-11, atan2(yShifted, xShifted));
+            
+            let r = 50 - s * n;
+            let g = s * n + map(dSquared, 0, 100000, 100, -200);
+            let b = 30;
+            
+            if (random(dSquared) < 200) {
+                r = 200;
+                g = 200;
+                b = 255;
+            }
+            
+            pixels[i + 0] += r;
+            pixels[i + 1] += g;
+            pixels[i + 2] += b;
+
+        }
+    }
+    updatePixels();
+});
+
+// noise
+Loader.pieces.push(function() {
+    let img = createGraphics(width, height);
+    img.loadPixels();
+    loadPixels();
+    img.pixelDensity(1);
+    img.randomSeed(20);
+    for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+            
+            let i = (x + y*width) << 2;
+            
+            let dSquared = (x-width*0.5)**2 + (y-height*0.5)**2;
+            
+            img.pixels[i + 0] = pixels[i + 0] + random(255);
+            img.pixels[i + 1] = random(255);
+            img.pixels[i + 2] = random(255);
+            img.pixels[i + 3] = map(dSquared, 0, 5000, 2, 4);
+
+        }
+    }
+    img.updatePixels();
+    updatePixels();
+    // lazy
+    img.filter(BLUR);
+    image(img, 0, 0);
+    
+});
+
+// outlining
+Loader.pieces.push(function() {
+    return;
+    noFill();
+    stroke(255);
+    strokeWeight(1);
+    ellipse(width/2, height/2, 700);
+    ellipse(width/2, height/2, 690);
+    ellipse(width/2, height/2, 550);
+    ellipse(width/2, height/2, 540);
+    strokeWeight(1);
+    line(0, height/2, width, height/2);
+    line(0, 0, width, height);
+    line(width/2, 0, width/2, height);
+    line(0, height, width, 0);
+    
+});
+
+// Flower
+Loader.pieces.push(function() {
+    
+    translate(width/2, height/2);
+
+    fill(255, 10);
+    
+    // grid lines
+    push();
+    scale(0.3)
+    for (let r = 14; r < 1000; r+=5.499) {
+        for (let i = 0; i < 2; i++) {
+            strokeWeight(6-i*2);
+            push();
+            stroke(225, 200, 200, 60 * (i + 1));
+            translate(i*30, 0);
+            translate((r-1)*cos(r-1), (r-1)*sin(r-1));
+            rotate(-r);
+            line(-r*0.33, 0, r*4, 0);
+            // random ellipses on lines
+            if (random(1) < 0.8) {
+                push();
+                scale(3);
+                translate(random(r), 0);
+                let s = random(1, 40);
+                for (let n = 0; n < s; n++) {
+                    strokeWeight(random(1, 5) * 0.8);
+                    stroke(205, random(10, 255));
+                    point(random(100), 0);
+                }
+                pop();
+            }
+            pop();
+        }
+    }
+    pop();
+
+    // add flower
+    randomSeed(32);
+    for (let i = 0, x = 0; i <= 500; i++, x++) {
+        stroke(255, 25+random(100), 25, 4);
+        strokeWeight(random(2, 10));
+        let controlPoints = [
+            {x: 0, y: 0}    
+        ];
+        
+        rad = 1750 * log(0.8, -x);
+        let r1 = rad + random(59) * -1.9;
+        let r2 = rad + random(100) * 2.9;
+        let ot = -5.46;
+        let t1 = random(TWO_PI) + ot;
+        let t2 = random(TWO_PI) + ot;
+        controlPoints.push({x: r1 * cos(t1), y: r1 * sin(t1)});
+        controlPoints.push({x: r2 * cos(t2), y: r2 * sin(t2)});
+        controlPoints.push({x: 0, y: 0});
+        
+        // image - flower
+        drawBezierShape(controlPoints);
+        
+    }
+    
+});
+
+Loader.pieces.push(function() {
+    
+    translate(width/2, height/2);
+    noStroke();
+    
+    // black circle
+    
+    let s = 100;
+    fill(200);
+    ellipse(0, 0, s*1.05);
+    fill(0, 100);
+    ellipse(0, 0, s);
+    
+    // rainbow light
+    
+    fill(255);
+    colorMode(HSB, 255);
+    noStroke();
+    for (let i = 0; i < 10; i++) {
+        push();
+        rotate(randomGaussian(0, 2));
+        translate(randomGaussian(5, 138), 0);
+        fill(random(255), 50, 255, 6);
+        for (let j = 1, a = 0; j < 100; j+=a, a+=0.1) {
+            ellipse(0, 0, 6+j*2);
+        }
+        pop();
+    }
+
+    
+});
+
+//////////////////////////////////////////////
+
+p5.disableFriendlyErrors = true;
+function setup() {
+    pixelDensity(1);
+    createCanvas(600, 600);
+}
+
+function draw() {
+    if (Loader.isLoading()) {
+        Loader.update();
+    } else {
+        noLoop();
+    }
+}
+            
+    </script>
+    </body>
+</html>
